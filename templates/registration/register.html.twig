@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription — ISET Clubs{% endblock %}
+
+{% block body %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h3 class="card-title text-center mb-4">
+                    🎓 Créer un compte
+                </h3>
+
+                {{ form_start(registrationForm, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(registrationForm.firstname) }}
+                            {{ form_widget(registrationForm.firstname, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(registrationForm.firstname) }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(registrationForm.lastname) }}
+                            {{ form_widget(registrationForm.lastname, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(registrationForm.lastname) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(registrationForm.email) }}
+                        {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(registrationForm.email) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(registrationForm.plainPassword.first) }}
+                        {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(registrationForm.plainPassword.first) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(registrationForm.plainPassword.second) }}
+                        {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(registrationForm.plainPassword.second) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_widget(registrationForm.agreeTerms) }}
+                        {{ form_label(registrationForm.agreeTerms) }}
+                        {{ form_errors(registrationForm.agreeTerms) }}
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">Créer mon compte</button>
+                    </div>
+
+                {{ form_end(registrationForm) }}
+
+                <hr>
+                <div class="text-center">
+                    <small>Déjà un compte ? <a href="{{ path('app_login') }}">Se connecter</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

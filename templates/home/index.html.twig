@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+{% block title %}Accueil — ISET Clubs{% endblock %}
+
+{% block body %}
+<div class="p-5 mb-4 rounded-3 text-white"
+     style="background: linear-gradient(135deg, #4e54c8, #8f94fb);">
+    <div class="container-fluid py-3">
+        <h1 class="display-5 fw-bold">🎓 ISET Clubs</h1>
+        <p class="col-md-8 fs-4">
+            Découvrez les clubs, participez aux événements et rejoignez la communauté.
+        </p>
+        {% if not app.user %}
+            <a href="{{ path('app_register') }}" class="btn btn-light btn-lg me-2">
+                Rejoindre la plateforme
+            </a>
+            <a href="{{ path('app_login') }}" class="btn btn-outline-light btn-lg">
+                Se connecter
+            </a>
+        {% else %}
+            <a href="{{ path('app_club_index') }}" class="btn btn-light btn-lg">
+                Voir tous les clubs
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>🏆 Clubs actifs</h2>
+        <a href="{{ path('app_club_index') }}" class="btn btn-outline-primary btn-sm">
+            Voir tout <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+    <div class="row g-3">
+        {% for club in clubs %}
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        {% if club.logo %}
+                            <img src="/uploads/logos/{{ club.logo }}"
+                                 class="rounded-circle mb-3"
+                                 width="80" height="80" style="object-fit:cover">
+                        {% else %}
+                            <div class="bg-primary rounded-circle d-inline-flex
+                                        align-items-center justify-content-center mb-3"
+                                 style="width:80px;height:80px">
+                                <i class="bi bi-people-fill text-white fs-2"></i>
+                            </div>
+                        {% endif %}
+                        <h5>{{ club.name }}</h5>
+                        <span class="badge bg-secondary">{{ club.domain }}</span>
+                        <p class="text-muted mt-2 small">
+                            {{ club.description|slice(0,80) }}...
+                        </p>
+                    </div>
+                    <div class="card-footer bg-transparent text-center">
+                        <a href="{{ path('app_club_show', {id: club.id}) }}"
+                           class="btn btn-outline-primary btn-sm">Voir le club</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p class="text-muted">Aucun club disponible.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="mb-5">
+    <h2 class="mb-3">📅 Prochains événements</h2>
+    {% for event in events %}
+        <p>{{ event.nomEvenement }}</p>
+    {% else %}
+        <div class="alert alert-info">Aucun événement à venir pour le moment.</div>
+    {% endfor %}
+</section>
+{% endblock %}

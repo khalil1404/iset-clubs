@@ -69,12 +69,26 @@ class User
     #[ORM\OneToMany(targetEntity: Feedback::class, mappedBy: 'user')]
     private Collection $feedback;
 
+    /**
+     * @var Collection<int, Candidature>
+     */
+    #[ORM\OneToMany(targetEntity: Candidature::class, mappedBy: 'user')]
+    private Collection $candidatures;
+
+    /**
+     * @var Collection<int, Reclamation>
+     */
+    #[ORM\OneToMany(targetEntity: Reclamation::class, mappedBy: 'user')]
+    private Collection $reclamations;
+
     public function __construct()
     {
         $this->clubs = new ArrayCollection();
         $this->clubMembers = new ArrayCollection();
         $this->participations = new ArrayCollection();
         $this->feedback = new ArrayCollection();
+        $this->candidatures = new ArrayCollection();
+        $this->reclamations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -316,6 +330,66 @@ class User
             // set the owning side to null (unless already changed)
             if ($feedback->getUser() === $this) {
                 $feedback->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Candidature>
+     */
+    public function getCandidatures(): Collection
+    {
+        return $this->candidatures;
+    }
+
+    public function addCandidature(Candidature $candidature): static
+    {
+        if (!$this->candidatures->contains($candidature)) {
+            $this->candidatures->add($candidature);
+            $candidature->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCandidature(Candidature $candidature): static
+    {
+        if ($this->candidatures->removeElement($candidature)) {
+            // set the owning side to null (unless already changed)
+            if ($candidature->getUser() === $this) {
+                $candidature->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Reclamation>
+     */
+    public function getReclamations(): Collection
+    {
+        return $this->reclamations;
+    }
+
+    public function addReclamation(Reclamation $reclamation): static
+    {
+        if (!$this->reclamations->contains($reclamation)) {
+            $this->reclamations->add($reclamation);
+            $reclamation->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReclamation(Reclamation $reclamation): static
+    {
+        if ($this->reclamations->removeElement($reclamation)) {
+            // set the owning side to null (unless already changed)
+            if ($reclamation->getUser() === $this) {
+                $reclamation->setUser(null);
             }
         }
 

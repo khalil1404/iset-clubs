@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "content-hash": "0948390f2dfa4e2694437811e23a37ec",
+=======
+    "content-hash": "7bb1438ef87c84acd6f6948eecd133dd",
+>>>>>>> develop
     "packages": [
         {
             "name": "composer/semver",
@@ -1265,6 +1269,7 @@
             "time": "2025-03-06T22:45:56+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "lcobucci/jwt",
             "version": "5.6.0",
             "source": {
@@ -1454,6 +1459,8 @@
             "time": "2025-12-20T17:47:00+00:00"
         },
         {
+=======
+>>>>>>> develop
             "name": "monolog/monolog",
             "version": "3.10.0",
             "source": {
@@ -7896,6 +7903,7 @@
             "time": "2026-05-20T07:20:23+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "symfonycasts/verify-email-bundle",
             "version": "v1.18.0",
             "source": {
@@ -7941,6 +7949,8 @@
             "time": "2025-11-29T11:53:37+00:00"
         },
         {
+=======
+>>>>>>> develop
             "name": "twig/extra-bundle",
             "version": "v3.24.0",
             "source": {

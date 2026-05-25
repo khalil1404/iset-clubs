@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mon Club{% endblock %}
+
+{% block body %}
+{% if club %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>⭐ Mon Club — {{ club.name }}</h2>
+        <span class="badge {{ club.status == 'approved' ? 'bg-success' : 'bg-warning text-dark' }} fs-6">
+            {{ club.status == 'approved' ? 'Approuvé ✓' : 'En attente' }}
+        </span>
+    </div>
+    {% if club.status == 'pending' %}
+        <div class="alert alert-warning">
+            <i class="bi bi-clock"></i>
+            Votre club est en attente de validation par l'administrateur.
+        </div>
+    {% endif %}
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card text-center bg-primary text-white">
+                <div class="card-body">
+                    <h2>0</h2>
+                    <p class="mb-0">Membres</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-success text-white">
+                <div class="card-body">
+                    <h2>0</h2>
+                    <p class="mb-0">Événements</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-info text-white">
+                <div class="card-body">
+                    <h2>0</h2>
+                    <p class="mb-0">Candidatures</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <p>Vous n'avez pas encore de club.</p>
+        <a href="{{ path('app_club_new') }}" class="btn btn-primary">
+            Créer mon club
+        </a>
+    </div>
+{% endif %}
+{% endblock %}

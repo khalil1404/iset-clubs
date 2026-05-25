@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ club.name }}{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-4 text-center">
+        {% if club.logo %}
+            <img src="/uploads/logos/{{ club.logo }}"
+                 class="rounded-circle shadow mb-3"
+                 width="150" height="150" style="object-fit:cover">
+        {% else %}
+            <div class="bg-primary rounded-circle d-inline-flex
+                        align-items-center justify-content-center mb-3"
+                 style="width:150px;height:150px">
+                <i class="bi bi-people-fill text-white" style="font-size:4rem"></i>
+            </div>
+        {% endif %}
+        <h2>{{ club.name }}</h2>
+        <span class="badge bg-secondary fs-6">{{ club.domain }}</span>
+        {% if club.website %}
+            <p class="mt-2">
+                <a href="{{ club.website }}" target="_blank"
+                   class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-globe"></i> Site web
+                </a>
+            </p>
+        {% endif %}
+    </div>
+    <div class="col-md-8">
+        <h4>À propos</h4>
+        <p class="lead">{{ club.description }}</p>
+        <hr>
+        <p class="text-muted">
+            <i class="bi bi-calendar3"></i>
+            Créé le {{ club.createdAt|date('d/m/Y') }}
+        </p>
+        {% if is_granted('ROLE_USER') %}
+            <a href="#" class="btn btn-success">
+                <i class="bi bi-person-plus"></i> Rejoindre ce club
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -6,9 +6,11 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -96,6 +98,27 @@ class User
         return $this->id;
     }
 
+    // ---- UserInterface methods ----
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+        return array_unique($roles);
+    }
+
+    public function eraseCredentials(): void
+    {
+        // clear temporary sensitive data if any
+    }
+
+    // ---- Getters & Setters ----
+
     public function getFirstname(): ?string
     {
         return $this->firstname;
@@ -104,7 +127,6 @@ class User
     public function setFirstname(string $firstname): static
     {
         $this->firstname = $firstname;
-
         return $this;
     }
 
@@ -116,7 +138,6 @@ class User
     public function setLastname(string $lastname): static
     {
         $this->lastname = $lastname;
-
         return $this;
     }
 
@@ -128,7 +149,6 @@ class User
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -140,19 +160,12 @@ class User
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
         return $this;
-    }
-
-    public function getRoles(): array
-    {
-        return $this->roles;
     }
 
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
-
         return $this;
     }
 
@@ -164,7 +177,6 @@ class User
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
-
         return $this;
     }
 
@@ -176,7 +188,6 @@ class User
     public function setDtype(string $dtype): static
     {
         $this->dtype = $dtype;
-
         return $this;
     }
 
@@ -188,7 +199,6 @@ class User
     public function setProfilePicture(?string $profilePicture): static
     {
         $this->profilePicture = $profilePicture;
-
         return $this;
     }
 
@@ -200,7 +210,6 @@ class User
     public function setOtpCode(?string $otpCode): static
     {
         $this->otpCode = $otpCode;
-
         return $this;
     }
 
@@ -212,7 +221,6 @@ class User
     public function setOtpExpiresAt(?\DateTimeImmutable $otpExpiresAt): static
     {
         $this->otpExpiresAt = $otpExpiresAt;
-
         return $this;
     }
 
@@ -230,19 +238,16 @@ class User
             $this->clubs->add($club);
             $club->setProposedBy($this);
         }
-
         return $this;
     }
 
     public function removeClub(Club $club): static
     {
         if ($this->clubs->removeElement($club)) {
-            // set the owning side to null (unless already changed)
             if ($club->getProposedBy() === $this) {
                 $club->setProposedBy(null);
             }
         }
-
         return $this;
     }
 
@@ -260,19 +265,16 @@ class User
             $this->clubMembers->add($clubMember);
             $clubMember->setUser($this);
         }
-
         return $this;
     }
 
     public function removeClubMember(ClubMember $clubMember): static
     {
         if ($this->clubMembers->removeElement($clubMember)) {
-            // set the owning side to null (unless already changed)
             if ($clubMember->getUser() === $this) {
                 $clubMember->setUser(null);
             }
         }
-
         return $this;
     }
 
@@ -290,19 +292,16 @@ class User
             $this->participations->add($participation);
             $participation->setUser($this);
         }
-
         return $this;
     }
 
     public function removeParticipation(Participation $participation): static
     {
         if ($this->participations->removeElement($participation)) {
-            // set the owning side to null (unless already changed)
             if ($participation->getUser() === $this) {
                 $participation->setUser(null);
             }
         }
-
         return $this;
     }
 
@@ -320,19 +319,16 @@ class User
             $this->feedback->add($feedback);
             $feedback->setUser($this);
         }
-
         return $this;
     }
 
     public function removeFeedback(Feedback $feedback): static
     {
         if ($this->feedback->removeElement($feedback)) {
-            // set the owning side to null (unless already changed)
             if ($feedback->getUser() === $this) {
                 $feedback->setUser(null);
             }
         }
-
         return $this;
     }
 
@@ -350,19 +346,16 @@ class User
             $this->candidatures->add($candidature);
             $candidature->setUser($this);
         }
-
         return $this;
     }
 
     public function removeCandidature(Candidature $candidature): static
     {
         if ($this->candidatures->removeElement($candidature)) {
-            // set the owning side to null (unless already changed)
             if ($candidature->getUser() === $this) {
                 $candidature->setUser(null);
             }
         }
-
         return $this;
     }
 
@@ -380,19 +373,16 @@ class User
             $this->reclamations->add($reclamation);
             $reclamation->setUser($this);
         }
-
         return $this;
     }
 
     public function removeReclamation(Reclamation $reclamation): static
     {
         if ($this->reclamations->removeElement($reclamation)) {
-            // set the owning side to null (unless already changed)
             if ($reclamation->getUser() === $this) {
                 $reclamation->setUser(null);
             }
         }
-
         return $this;
     }
 }

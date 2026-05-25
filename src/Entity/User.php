@@ -51,9 +51,16 @@ class User
     #[ORM\OneToMany(targetEntity: Club::class, mappedBy: 'proposedBy')]
     private Collection $clubs;
 
+    /**
+     * @var Collection<int, ClubMember>
+     */
+    #[ORM\OneToMany(targetEntity: ClubMember::class, mappedBy: 'user')]
+    private Collection $clubMembers;
+
     public function __construct()
     {
         $this->clubs = new ArrayCollection();
+        $this->clubMembers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -205,6 +212,36 @@ class User
             // set the owning side to null (unless already changed)
             if ($club->getProposedBy() === $this) {
                 $club->setProposedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ClubMember>
+     */
+    public function getClubMembers(): Collection
+    {
+        return $this->clubMembers;
+    }
+
+    public function addClubMember(ClubMember $clubMember): static
+    {
+        if (!$this->clubMembers->contains($clubMember)) {
+            $this->clubMembers->add($clubMember);
+            $clubMember->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClubMember(ClubMember $clubMember): static
+    {
+        if ($this->clubMembers->removeElement($clubMember)) {
+            // set the owning side to null (unless already changed)
+            if ($clubMember->getUser() === $this) {
+                $clubMember->setUser(null);
             }
         }
 

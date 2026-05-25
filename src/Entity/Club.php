@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ClubRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -37,6 +39,24 @@ class Club
 
     #[ORM\ManyToOne(inversedBy: 'clubs')]
     private ?User $proposedBy = null;
+
+    /**
+     * @var Collection<int, ClubMember>
+     */
+    #[ORM\OneToMany(targetEntity: ClubMember::class, mappedBy: 'club')]
+    private Collection $clubMembers;
+
+    /**
+     * @var Collection<int, Evenement>
+     */
+    #[ORM\OneToMany(targetEntity: Evenement::class, mappedBy: 'club')]
+    private Collection $evenements;
+
+    public function __construct()
+    {
+        $this->clubMembers = new ArrayCollection();
+        $this->evenements = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -135,6 +155,66 @@ class Club
     public function setProposedBy(?User $proposedBy): static
     {
         $this->proposedBy = $proposedBy;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ClubMember>
+     */
+    public function getClubMembers(): Collection
+    {
+        return $this->clubMembers;
+    }
+
+    public function addClubMember(ClubMember $clubMember): static
+    {
+        if (!$this->clubMembers->contains($clubMember)) {
+            $this->clubMembers->add($clubMember);
+            $clubMember->setClub($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClubMember(ClubMember $clubMember): static
+    {
+        if ($this->clubMembers->removeElement($clubMember)) {
+            // set the owning side to null (unless already changed)
+            if ($clubMember->getClub() === $this) {
+                $clubMember->setClub(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Evenement>
+     */
+    public function getEvenements(): Collection
+    {
+        return $this->evenements;
+    }
+
+    public function addEvenement(Evenement $evenement): static
+    {
+        if (!$this->evenements->contains($evenement)) {
+            $this->evenements->add($evenement);
+            $evenement->setClub($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvenement(Evenement $evenement): static
+    {
+        if ($this->evenements->removeElement($evenement)) {
+            // set the owning side to null (unless already changed)
+            if ($evenement->getClub() === $this) {
+                $evenement->setClub(null);
+            }
+        }
 
         return $this;
     }

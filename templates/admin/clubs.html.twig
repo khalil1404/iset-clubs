@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+{% block title %}Clubs — Admin{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-2">{% include 'admin/_sidebar.html.twig' %}</div>
+    <div class="col-md-10">
+        <h2 class="mb-4">🏆 Gestion des clubs</h2>
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th><th>Nom</th><th>Domaine</th>
+                            <th>Créateur</th><th>Statut</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for club in clubs %}
+                            <tr>
+                                <td>{{ club.id }}</td>
+                                <td>{{ club.name }}</td>
+                                <td>{{ club.domain }}</td>
+                                <td>{{ club.proposedBy.fullName }}</td>
+                                <td>
+                                    <span class="badge {{
+                                        club.status == 'approved' ? 'bg-success' :
+                                        (club.status == 'pending' ? 'bg-warning text-dark' : 'bg-danger')
+                                    }}">{{ club.status }}</span>
+                                </td>
+                                <td>
+                                    {% if club.status == 'pending' %}
+                                        <a href="{{ path('app_admin_club_approve', {id: club.id}) }}"
+                                           class="btn btn-success btn-sm">✓ Approuver</a>
+                                        <a href="{{ path('app_admin_club_reject', {id: club.id}) }}"
+                                           class="btn btn-danger btn-sm">✗ Refuser</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -129,4 +129,13 @@ public function leave(
 
     return $this->redirectToRoute('app_club_show', ['id' => $club->getId()]);
 }
+#[Route('/my-clubs', name: 'app_my_clubs')]
+#[IsGranted('ROLE_USER')]
+public function myClubs(ClubMemberRepository $memberRepo): Response
+{
+    $memberships = $memberRepo->findBy(['user' => $this->getUser()]);
+    return $this->render('club/my_clubs.html.twig', [
+        'memberships' => $memberships
+    ]);
+}
 }

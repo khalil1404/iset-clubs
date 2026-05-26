@@ -55,7 +55,7 @@ class AppFixtures extends Fixture
              ->setDescription('Club dédié à la technologie.')
              ->setDomain('Technologie')
              ->setStatus('approved')
-             ->setCreatedAt(new \DateTime())
+             ->setCreatedAt(new \DateTimeImmutable())
              ->setProposedBy($president);
         $manager->persist($club);
 

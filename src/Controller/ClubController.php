@@ -61,7 +61,7 @@ class ClubController extends AbstractController
             }
 
             $club->setStatus('pending');
-            $club->setCreatedAt(new \DateTime());
+            $club->setCreatedAt(new \DateTimeImmutable());
             $club->setProposedBy($this->getUser());
             $em->persist($club);
             $em->flush();

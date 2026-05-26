@@ -1,20 +1,35 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Hello RecruitmentController!{% endblock %}
-
+{% block title %}Recrutements{% endblock %}
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/xampp/htdocs/iset-clubs/src/Controller/RecruitmentController.php</code></li>
-        <li>Your template at <code>C:/xampp/htdocs/iset-clubs/templates/recruitment/index.html.twig</code></li>
-    </ul>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>💼 Offres de recrutement</h1>
+    {% if is_granted('ROLE_PRESIDENT') %}
+        <a href="{{ path('app_recruitment_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Publier une offre
+        </a>
+    {% endif %}
+</div>
+<div class="row g-3">
+    {% for offer in offers %}
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5>{{ offer.title }}</h5>
+                    <span class="badge bg-success">{{ offer.club.name }}</span>
+                    <p class="text-muted small mt-2">{{ offer.description|slice(0,100) }}...</p>
+                    <p class="text-danger small">
+                        <i class="bi bi-clock"></i>
+                        Deadline : {{ offer.deadline|date('d/m/Y') }}
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{{ path('app_recruitment_show', {id: offer.id}) }}"
+                       class="btn btn-outline-primary btn-sm">Voir l'offre</a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info">Aucune offre disponible.</div>
+    {% endfor %}
 </div>
 {% endblock %}

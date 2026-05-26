@@ -2,21 +2,6 @@
 
 namespace App\DataFixtures;
 
-<<<<<<< HEAD
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Persistence\ObjectManager;
-
-class AppFixtures extends Fixture
-{
-    public function load(ObjectManager $manager): void
-    {
-        // $product = new Product();
-        // $manager->persist($product);
-
-        $manager->flush();
-    }
-}
-=======
 use App\Entity\User;
 use App\Entity\Club;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -64,4 +49,3 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 }
->>>>>>> develop

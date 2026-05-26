@@ -2,21 +2,6 @@
 
 namespace App\DataFixtures;
 
-<<<<<<< HEAD
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Persistence\ObjectManager;
-
-class AppFixtures extends Fixture
-{
-    public function load(ObjectManager $manager): void
-    {
-        // $product = new Product();
-        // $manager->persist($product);
-
-        $manager->flush();
-    }
-}
-=======
 use App\Entity\User;
 use App\Entity\Club;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -31,6 +16,7 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+        // Admin
         $admin = new User();
         $admin->setFirstname('Admin')
               ->setLastname('ISET')
@@ -41,6 +27,7 @@ class AppFixtures extends Fixture
               ->setPassword($this->hasher->hashPassword($admin, 'admin123'));
         $manager->persist($admin);
 
+        // Président
         $president = new User();
         $president->setFirstname('Mohamed')
                   ->setLastname('Ben Ali')
@@ -51,6 +38,7 @@ class AppFixtures extends Fixture
                   ->setPassword($this->hasher->hashPassword($president, 'president123'));
         $manager->persist($president);
 
+        // Étudiant
         $student = new User();
         $student->setFirstname('Sarra')
                 ->setLastname('Trabelsi')
@@ -61,7 +49,16 @@ class AppFixtures extends Fixture
                 ->setPassword($this->hasher->hashPassword($student, 'etudiant123'));
         $manager->persist($student);
 
+        // Club
+        $club = new Club();
+        $club->setName('Club Tech ISET')
+             ->setDescription('Club dédié à la technologie.')
+             ->setDomain('Technologie')
+             ->setStatus('approved')
+             ->setCreatedAt(new \DateTime())
+             ->setProposedBy($president);
+        $manager->persist($club);
+
         $manager->flush();
     }
 }
->>>>>>> develop

@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mes candidatures{% endblock %}
+{% block body %}
+<h2 class="mb-4">📋 Mes candidatures</h2>
+{% if applications %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Poste</th><th>Club</th><th>Date</th><th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                    <tr>
+                        <td>{{ app.recrutement.title }}</td>
+                        <td>{{ app.recrutement.club.name }}</td>
+                        <td>{{ app.submittedAt|date('d/m/Y') }}</td>
+                        <td>
+                            <span class="badge {{
+                                app.status == 'accepted' ? 'bg-success' :
+                                (app.status == 'rejected' ? 'bg-danger' : 'bg-warning text-dark')
+                            }}">{{ app.status }}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">Aucune candidature pour le moment.</div>
+{% endif %}
+{% endblock %}

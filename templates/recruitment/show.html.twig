@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ offer.title }}{% endblock %}
+{% block body %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>{{ offer.title }}</h2>
+        <span class="badge bg-success mb-3">{{ offer.club.name }}</span>
+        <h5>Description</h5>
+        <p>{{ offer.description }}</p>
+        {% if offer.requirements %}
+            <h5>Prérequis</h5>
+            <p>{{ offer.requirements }}</p>
+        {% endif %}
+        <p class="text-danger">
+            <i class="bi bi-clock"></i>
+            Deadline : {{ offer.deadline|date('d/m/Y') }}
+        </p>
+
+        {% if is_granted('ROLE_USER') %}
+            <hr>
+            <h5>Postuler</h5>
+            <form method="post" enctype="multipart/form-data"
+                  action="{{ path('app_recruitment_apply', {id: offer.id}) }}">
+                <div class="mb-3">
+                    <label class="form-label">Message de motivation</label>
+                    <textarea name="message" class="form-control" rows="4" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">CV (PDF)</label>
+                    <input type="file" name="cv" class="form-control" accept=".pdf" required>
+                </div>
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-send"></i> Postuler
+                </button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

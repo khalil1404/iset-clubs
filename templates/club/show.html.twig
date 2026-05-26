@@ -34,9 +34,15 @@
             <i class="bi bi-calendar3"></i>
             Créé le {{ club.createdAt|date('d/m/Y') }}
         </p>
-        {% if is_granted('ROLE_USER') %}
-            <a href="#" class="btn btn-success">
-                <i class="bi bi-person-plus"></i> Rejoindre ce club
+        {% if is_granted('ROLE_USER') and app.user %}
+            <form method="post" action="{{ path('app_club_join', {id: club.id}) }}" class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token('join'~club.id) }}">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-person-plus"></i> Rejoindre ce club
+                </button>
+            </form>
+            <a href="{{ path('app_my_clubs') }}" class="btn btn-outline-secondary ms-2">
+                Mes clubs
             </a>
         {% endif %}
     </div>

@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ event.nomEvenement }}{% endblock %}
+{% block body %}
+<div class="row">
+    <div class="col-md-8">
+        {% if event.image %}
+            <img src="/uploads/events/{{ event.image }}"
+                 class="img-fluid rounded mb-3" style="max-height:300px;width:100%;object-fit:cover">
+        {% endif %}
+        <h2>{{ event.nomEvenement }}</h2>
+        <p class="text-muted">
+            <i class="bi bi-calendar3"></i> {{ event.dateDebut|date('d/m/Y H:i') }}
+            &nbsp;→&nbsp; {{ event.dateFin|date('d/m/Y H:i') }}
+            &nbsp;|&nbsp;
+            <i class="bi bi-geo-alt"></i> {{ event.lieu }}
+            &nbsp;|&nbsp;
+            <i class="bi bi-people"></i> {{ participants|length }} participants
+        </p>
+        <p>{{ event.description }}</p>
+
+        {% if is_granted('ROLE_USER') %}
+            {% if not isRegistered %}
+                <form method="post" action="{{ path('app_event_register', {id: event.id}) }}">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-calendar-check"></i> S'inscrire
+                    </button>
+                </form>
+            {% else %}
+                <form method="post" action="{{ path('app_event_unregister', {id: event.id}) }}">
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="bi bi-calendar-x"></i> Se désinscrire
+                    </button>
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header"><strong>Club organisateur</strong></div>
+            <div class="card-body text-center">
+                <h5>{{ event.club.name }}</h5>
+                <span class="badge bg-secondary">{{ event.club.domain }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

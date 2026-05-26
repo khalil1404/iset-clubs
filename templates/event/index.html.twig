@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+{% block title %}Événements{% endblock %}
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>📅 Événements</h1>
+    {% if is_granted('ROLE_PRESIDENT') %}
+        <a href="{{ path('app_event_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Créer un événement
+        </a>
+    {% endif %}
+</div>
+<div class="row g-3">
+    {% for event in events %}
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                {% if event.image %}
+                    <img src="/uploads/events/{{ event.image }}"
+                         class="card-img-top" height="150" style="object-fit:cover">
+                {% else %}
+                    <div class="bg-info d-flex align-items-center justify-content-center"
+                         style="height:150px">
+                        <i class="bi bi-calendar-event text-white" style="font-size:3rem"></i>
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5>{{ event.nomEvenement }}</h5>
+                    <p class="text-muted small">
+                        <i class="bi bi-calendar3"></i> {{ event.dateDebut|date('d/m/Y') }}
+                        &nbsp;|&nbsp;
+                        <i class="bi bi-geo-alt"></i> {{ event.lieu }}
+                    </p>
+                    <p class="small">{{ event.description|slice(0,80) }}...</p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{{ path('app_event_show', {id: event.id}) }}"
+                       class="btn btn-outline-success btn-sm">Voir plus</a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">Aucun événement disponible.</div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

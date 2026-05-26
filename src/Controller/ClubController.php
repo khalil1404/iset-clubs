@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Controller;
-
+use App\Entity\ClubMember;
+use App\Repository\ClubMemberRepository;
 use App\Entity\Club;
 use App\Form\ClubType;
 use App\Repository\ClubRepository;
@@ -82,4 +83,50 @@ class ClubController extends AbstractController
         ]);
         return $this->render('club/my_club.html.twig', ['club' => $club]);
     }
+    #[Route('/{id}/join', name: 'app_club_join', methods: ['POST'])]
+#[IsGranted('ROLE_USER')]
+public function join(
+    Club $club,
+    EntityManagerInterface $em,
+    ClubMemberRepository $memberRepo
+): Response {
+    $user = $this->getUser();
+    $existing = $memberRepo->findOneBy(['user' => $user, 'club' => $club]);
+
+    if (!$existing) {
+        $member = new ClubMember();
+        $member->setUser($user);
+        $member->setClub($club);
+        $member->setRole('member');
+        $member->setJoinedAt(new \DateTime());
+        $em->persist($member);
+        $em->flush();
+        $this->addFlash('success', 'Vous avez rejoint le club !');
+    } else {
+        $this->addFlash('warning', 'Vous êtes déjà membre de ce club.');
+    }
+
+    return $this->redirectToRoute('app_club_show', ['id' => $club->getId()]);
+}
+
+#[Route('/{id}/leave', name: 'app_club_leave', methods: ['POST'])]
+#[IsGranted('ROLE_USER')]
+public function leave(
+    Club $club,
+    EntityManagerInterface $em,
+    ClubMemberRepository $memberRepo
+): Response {
+    $member = $memberRepo->findOneBy([
+        'user' => $this->getUser(),
+        'club' => $club
+    ]);
+
+    if ($member) {
+        $em->remove($member);
+        $em->flush();
+        $this->addFlash('success', 'Vous avez quitté le club.');
+    }
+
+    return $this->redirectToRoute('app_club_show', ['id' => $club->getId()]);
+}
 }

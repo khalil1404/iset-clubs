@@ -33,6 +33,51 @@
                 </form>
             {% endif %}
         {% endif %}
+
+        {% set feedbacks = event.feedback %}
+        {% if feedbacks|length > 0 %}
+            <hr>
+            <h5>⭐ Feedbacks ({{ feedbacks|length }})</h5>
+            {% set total = 0 %}
+            {% for f in feedbacks %}{% set total = total + f.rating %}{% endfor %}
+            <p class="text-muted">Note moyenne : <strong>{{ (total / feedbacks|length)|round(1) }}/5</strong></p>
+            {% for f in feedbacks %}
+                <div class="card mb-2">
+                    <div class="card-body py-2">
+                        <strong>{{ f.user.fullName }}</strong>
+                        <span class="text-warning ms-2">
+                            {% for i in 1..f.rating %}⭐{% endfor %}
+                        </span>
+                        <p class="mb-0 small text-muted">{{ f.content }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if isRegistered %}
+            <hr>
+            <h5>Laisser un feedback</h5>
+            <form method="post" action="{{ path('app_feedback_new', {id: event.id}) }}">
+                <div class="mb-2">
+                    <label class="form-label">Note</label>
+                    <select name="rating" class="form-select" required>
+                        <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                        <option value="4">⭐⭐⭐⭐ Bien</option>
+                        <option value="3">⭐⭐⭐ Moyen</option>
+                        <option value="2">⭐⭐ Mauvais</option>
+                        <option value="1">⭐ Très mauvais</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Commentaire</label>
+                    <textarea name="content" class="form-control" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-outline-primary btn-sm">
+                    Envoyer le feedback
+                </button>
+            </form>
+        {% endif %}
+
     </div>
     <div class="col-md-4">
         <div class="card shadow-sm">

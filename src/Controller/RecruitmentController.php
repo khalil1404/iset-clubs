@@ -105,4 +105,26 @@ class RecruitmentController extends AbstractController
             'applications' => $applications
         ]);
     }
+    #[Route('/my-club/candidatures', name: 'app_president_candidatures')]
+#[IsGranted('ROLE_PRESIDENT')]
+public function presidentCandidatures(
+    CandidatureRepository $candRepo,
+    EntityManagerInterface $em
+): Response {
+    $clubRepo = $em->getRepository(\App\Entity\Club::class);
+    $club = $clubRepo->findOneBy(['proposedBy' => $this->getUser()]);
+
+    $candidatures = [];
+    if ($club) {
+        foreach ($club->getRecrutements() as $rec) {
+            foreach ($candRepo->findBy(['recrutement' => $rec]) as $cand) {
+                $candidatures[] = $cand;
+            }
+        }
+    }
+
+    return $this->render('recruitment/president_candidatures.html.twig', [
+        'candidatures' => $candidatures
+    ]);
+}
 }

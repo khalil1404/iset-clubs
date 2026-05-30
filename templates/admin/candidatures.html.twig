@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+{% block title %}Candidatures — Admin{% endblock %}
+{% block body %}
+<div class="row">
+    <div class="col-md-2">{% include 'admin/_sidebar.html.twig' %}</div>
+    <div class="col-md-10">
+        <h2 class="mb-4">📋 Candidatures</h2>
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Candidat</th><th>Poste</th><th>Club</th>
+                            <th>Date</th><th>CV</th><th>Statut</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in candidatures %}
+                            <tr>
+                                <td>{{ c.user.fullName }}</td>
+                                <td>{{ c.recrutement.title }}</td>
+                                <td>{{ c.recrutement.club.name }}</td>
+                                <td>{{ c.submittedAt|date('d/m/Y') }}</td>
+                                <td>
+                                    {% if c.cvFilename %}
+                                        <a href="/uploads/cv/{{ c.cvFilename }}"
+                                           target="_blank" class="btn btn-sm btn-outline-secondary">
+                                            <i class="bi bi-file-pdf"></i> CV
+                                        </a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge {{
+                                        c.status == 'accepted' ? 'bg-success' :
+                                        (c.status == 'rejected' ? 'bg-danger' : 'bg-warning text-dark')
+                                    }}">{{ c.status }}</span>
+                                </td>
+                                <td>
+                                    {% if c.status == 'pending' %}
+                                        <a href="{{ path('app_admin_candidature_accept', {id: c.id}) }}"
+                                           class="btn btn-success btn-sm">✓</a>
+                                        <a href="{{ path('app_admin_candidature_reject', {id: c.id}) }}"
+                                           class="btn btn-danger btn-sm">✗</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

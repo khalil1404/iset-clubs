@@ -18,17 +18,21 @@
                         <i class="bi bi-people"></i> Clubs
                     </a>
                 </li>
-                {# Ces liens seront activés dans Day 3 #}
-                {# <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_event_index') }}">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_admin_events') }}">
                         <i class="bi bi-calendar-event"></i> Événements
                     </a>
                 </li>
-                {# <li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_recruitment_index') }}">
                         <i class="bi bi-briefcase"></i> Recrutements
                     </a>
-                </li> #}
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_reclamation_index') }}">
+                        <i class="bi bi-chat-left-text"></i> Réclamations
+                    </a>
+                </li>
             </ul>
             <ul class="navbar-nav ms-auto">
                 {% if app.user %}
@@ -59,7 +63,7 @@
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <a class="dropdown-item" href="{{ path('app_profile') }}">
+                                <a class="dropdown-item" href="#">
                                     <i class="bi bi-person"></i> Mon profil
                                 </a>
                             </li>

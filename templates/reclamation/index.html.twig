@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mes réclamations{% endblock %}
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>📝 Mes réclamations</h2>
+    <a href="{{ path('app_reclamation_new') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Nouvelle réclamation
+    </a>
+</div>
+{% if reclamations %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr><th>Sujet</th><th>Date</th><th>Statut</th></tr>
+            </thead>
+            <tbody>
+                {% for r in reclamations %}
+                    <tr>
+                        <td>{{ r.subject }}</td>
+                        <td>{{ r.createdAt|date('d/m/Y') }}</td>
+                        <td>
+                            <span class="badge {{
+                                r.status == 'resolved' ? 'bg-success' :
+                                (r.status == 'in_progress' ? 'bg-info' : 'bg-warning text-dark')
+                            }}">{{ r.status }}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">Aucune réclamation.</div>
+{% endif %}
+{% endblock %}

@@ -98,7 +98,7 @@ public function join(
         $member->setUser($user);
         $member->setClub($club);
         $member->setRole('member');
-        $member->setJoinedAt(new \DateTime());
+        $member->setJoinedAt(new \DateTimeImmutable());
         $em->persist($member);
         $em->flush();
         $this->addFlash('success', 'Vous avez rejoint le club !');

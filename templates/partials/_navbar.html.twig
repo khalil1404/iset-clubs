@@ -19,22 +19,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_event_index') }}">
+                        <i class="bi bi-calendar-event"></i> Événements
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_recruitment_index') }}">
                         <i class="bi bi-briefcase"></i> Recrutements
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_reclamation_index') }}">
-                        <i class="bi bi-chat-left-text"></i> Réclamations
-                    </a>
-                </li>
-                {% if is_granted('ROLE_USER') and app.user %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_my_clubs') }}">
-                            <i class="bi bi-bookmark-heart"></i> Mes clubs
-                        </a>
-                    </li>
-                {% endif %}
             </ul>
             <ul class="navbar-nav ms-auto">
                 {% if app.user %}
@@ -65,16 +58,10 @@
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <a class="dropdown-item" href="{{ path('app_my_clubs') }}">
-                                    <i class="bi bi-award"></i> Mes clubs
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-person"></i> Mon profil
                                 </a>
                             </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ path('app_reclamation_index') }}">
-                                    <i class="bi bi-chat-dots"></i> Mes réclamations
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
                                     <i class="bi bi-box-arrow-right"></i> Déconnexion

@@ -1,73 +1,29 @@
 {% extends 'base.html.twig' %}
-{% block title %}Mon Club{% endblock %}
+{% block title %}Mes clubs{% endblock %}
 {% block body %}
-{% if club %}
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>⭐ {{ club.name }}</h2>
-        <span class="badge {{ club.status == 'approved' ? 'bg-success' : 'bg-warning text-dark' }} fs-6">
-            {{ club.status == 'approved' ? 'Approuvé ✓' : 'En attente' }}
-        </span>
-    </div>
-
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <a href="{{ path('app_event_new') }}" class="text-decoration-none">
-                <div class="card text-center bg-primary text-white shadow-sm">
-                    <div class="card-body">
-                        <i class="bi bi-calendar-plus fs-1"></i>
-                        <p class="mb-0 mt-2">Créer un événement</p>
+<h2 class="mb-4">🏆 Mes clubs</h2>
+{% if memberships %}
+    <div class="row g-3">
+        {% for membership in memberships %}
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h5>{{ membership.club.name }}</h5>
+                        <span class="badge bg-secondary">{{ membership.role }}</span>
+                        <p class="text-muted small mt-2">
+                            Membre depuis {{ membership.joinedAt|date('d/m/Y') }}
+                        </p>
+                        <a href="{{ path('app_club_show', {id: membership.club.id}) }}"
+                           class="btn btn-outline-primary btn-sm">Voir le club</a>
                     </div>
                 </div>
-            </a>
-        </div>
-        <div class="col-md-3">
-            <a href="{{ path('app_recruitment_new') }}" class="text-decoration-none">
-                <div class="card text-center bg-success text-white shadow-sm">
-                    <div class="card-body">
-                        <i class="bi bi-briefcase fs-1"></i>
-                        <p class="mb-0 mt-2">Publier recrutement</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3">
-            <a href="{{ path('app_president_events') }}" class="text-decoration-none">
-                <div class="card text-center bg-info text-white shadow-sm">
-                    <div class="card-body">
-                        <i class="bi bi-calendar-event fs-1"></i>
-                        <p class="mb-0 mt-2">Mes événements</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3">
-            <a href="{{ path('app_president_candidatures') }}" class="text-decoration-none">
-                <div class="card text-center bg-warning text-dark shadow-sm">
-                    <div class="card-body">
-                        <i class="bi bi-people fs-1"></i>
-                        <p class="mb-0 mt-2">Candidatures reçues</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
-
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <h5>Informations du club</h5>
-            <p><strong>Domaine :</strong> {{ club.domain }}</p>
-            <p><strong>Description :</strong> {{ club.description }}</p>
-            {% if club.website %}
-                <p><strong>Site web :</strong>
-                    <a href="{{ club.website }}" target="_blank">{{ club.website }}</a>
-                </p>
-            {% endif %}
-        </div>
+            </div>
+        {% endfor %}
     </div>
 {% else %}
     <div class="alert alert-info">
-        <p>Vous n'avez pas encore de club.</p>
-        <a href="{{ path('app_club_new') }}" class="btn btn-primary">Créer mon club</a>
+        Vous n'êtes membre d'aucun club.
+        <a href="{{ path('app_club_index') }}">Découvrir les clubs</a>
     </div>
 {% endif %}
-{% endblock %} 
+{% endblock %}

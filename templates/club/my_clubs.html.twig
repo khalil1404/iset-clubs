@@ -1,29 +1,29 @@
 {% extends 'base.html.twig' %}
-{% block title %}Mes clubs{% endblock %}
+{% block title %}Mes Clubs{% endblock %}
 {% block body %}
-<h2 class="mb-4">🏆 Mes clubs</h2>
-{% if memberships %}
-    <div class="row g-3">
-        {% for membership in memberships %}
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-body text-center">
-                        <h5>{{ membership.club.name }}</h5>
-                        <span class="badge bg-secondary">{{ membership.role }}</span>
-                        <p class="text-muted small mt-2">
-                            Membre depuis {{ membership.joinedAt|date('d/m/Y') }}
-                        </p>
-                        <a href="{{ path('app_club_show', {id: membership.club.id}) }}"
-                           class="btn btn-outline-primary btn-sm">Voir le club</a>
+<div class="container py-4">
+    <h2>🎓 Mes Clubs</h2>
+
+    {% if memberships is empty %}
+        <div class="alert alert-info">
+            Vous n'êtes membre d'aucun club pour le moment.
+            <a href="{{ path('app_club_index') }}">Découvrir les clubs</a>
+        </div>
+    {% else %}
+        <div class="row">
+            {% for membership in memberships %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ membership.club.name }}</h5>
+                            <p class="card-text text-muted">{{ membership.club.domain }}</p>
+                            <a href="{{ path('app_club_show', {id: membership.club.id}) }}" 
+                               class="btn btn-sm btn-primary">Voir le club</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
-    </div>
-{% else %}
-    <div class="alert alert-info">
-        Vous n'êtes membre d'aucun club.
-        <a href="{{ path('app_club_index') }}">Découvrir les clubs</a>
-    </div>
-{% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

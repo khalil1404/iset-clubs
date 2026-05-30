@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Repository\ClubRepository;
 use App\Repository\UserRepository;
 use App\Repository\EvenementRepository;
+use App\Repository\CandidatureRepository;
+use App\Repository\ReclamationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -114,5 +116,66 @@ class AdminController extends AbstractController
             $this->addFlash('warning', "Événement refusé.");
         }
         return $this->redirectToRoute('app_admin_events');
+    }
+
+    #[Route('/candidatures', name: 'app_admin_candidatures')]
+    public function candidatures(CandidatureRepository $candRepo): Response
+    {
+        return $this->render('admin/candidatures.html.twig', [
+            'candidatures' => $candRepo->findAll()
+        ]);
+    }
+
+    #[Route('/candidatures/{id}/accept', name: 'app_admin_candidature_accept')]
+    public function acceptCandidature(
+        int $id,
+        CandidatureRepository $candRepo,
+        EntityManagerInterface $em
+    ): Response {
+        $cand = $candRepo->find($id);
+        if ($cand) {
+            $cand->setStatus('accepted');
+            $em->flush();
+            $this->addFlash('success', 'Candidature acceptée !');
+        }
+        return $this->redirectToRoute('app_admin_candidatures');
+    }
+
+    #[Route('/candidatures/{id}/reject', name: 'app_admin_candidature_reject')]
+    public function rejectCandidature(
+        int $id,
+        CandidatureRepository $candRepo,
+        EntityManagerInterface $em
+    ): Response {
+        $cand = $candRepo->find($id);
+        if ($cand) {
+            $cand->setStatus('rejected');
+            $em->flush();
+            $this->addFlash('warning', 'Candidature refusée.');
+        }
+        return $this->redirectToRoute('app_admin_candidatures');
+    }
+
+    #[Route('/reclamations', name: 'app_admin_reclamations')]
+    public function reclamations(ReclamationRepository $repo): Response
+    {
+        return $this->render('admin/reclamations.html.twig', [
+            'reclamations' => $repo->findAll()
+        ]);
+    }
+
+    #[Route('/reclamations/{id}/resolve', name: 'app_admin_reclamation_resolve')]
+    public function resolveReclamation(
+        int $id,
+        ReclamationRepository $repo,
+        EntityManagerInterface $em
+    ): Response {
+        $r = $repo->find($id);
+        if ($r) {
+            $r->setStatus('resolved');
+            $em->flush();
+            $this->addFlash('success', 'Réclamation résolue !');
+        }
+        return $this->redirectToRoute('app_admin_reclamations');
     }
 }

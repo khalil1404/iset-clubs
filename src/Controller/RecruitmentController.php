@@ -15,7 +15,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/recruitment')]
-class RecrutementController extends AbstractController
+class RecruitmentController extends AbstractController
 {
     #[Route('/', name: 'app_recruitment_index')]
     public function index(RecrutementRepository $repo): Response

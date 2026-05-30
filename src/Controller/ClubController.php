@@ -82,4 +82,17 @@ class ClubController extends AbstractController
         ]);
         return $this->render('club/my_club.html.twig', ['club' => $club]);
     }
+    #[Route('/my-club/events', name: 'app_president_events')]
+#[IsGranted('ROLE_PRESIDENT')]
+public function presidentEvents(
+    \App\Repository\EvenementRepository $eventRepo,
+    \App\Repository\ClubRepository $clubRepo
+): Response {
+    $club = $clubRepo->findOneBy(['proposedBy' => $this->getUser()]);
+    $events = $club ? $eventRepo->findBy(['club' => $club]) : [];
+    return $this->render('club/president_events.html.twig', [
+        'events' => $events,
+        'club' => $club
+    ]);
+}
 }

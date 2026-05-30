@@ -1,236 +1,92 @@
-<?php
+{% extends 'base.html.twig' %}
+{% block title %}{{ event.nomEvenement }}{% endblock %}
+{% block body %}
+<div class="row">
+    <div class="col-md-8">
+        {% if event.image %}
+            <img src="/uploads/events/{{ event.image }}"
+                 class="img-fluid rounded mb-3" style="max-height:300px;width:100%;object-fit:cover">
+        {% endif %}
+        <h2>{{ event.nomEvenement }}</h2>
+        <p class="text-muted">
+            <i class="bi bi-calendar3"></i> {{ event.dateDebut|date('d/m/Y H:i') }}
+            &nbsp;→&nbsp; {{ event.dateFin|date('d/m/Y H:i') }}
+            &nbsp;|&nbsp;
+            <i class="bi bi-geo-alt"></i> {{ event.lieu }}
+            &nbsp;|&nbsp;
+            <i class="bi bi-people"></i> {{ participants|length }} participants
+        </p>
+        <p>{{ event.description }}</p>
 
-namespace App\Entity;
+        {% if is_granted('ROLE_USER') %}
+            {% if not isRegistered %}
+                <form method="post" action="{{ path('app_event_register', {id: event.id}) }}">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-calendar-check"></i> S'inscrire
+                    </button>
+                </form>
+            {% else %}
+                <form method="post" action="{{ path('app_event_unregister', {id: event.id}) }}">
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="bi bi-calendar-x"></i> Se désinscrire
+                    </button>
+                </form>
+            {% endif %}
+        {% endif %}
 
-use App\Repository\EvenementRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
+        {% set feedbacks = event.feedback %}
+        {% if feedbacks|length > 0 %}
+            <hr>
+            <h5>⭐ Feedbacks ({{ feedbacks|length }})</h5>
+            {% set total = 0 %}
+            {% for f in feedbacks %}{% set total = total + f.rating %}{% endfor %}
+            <p class="text-muted">Note moyenne : <strong>{{ (total / feedbacks|length)|round(1) }}/5</strong></p>
+            {% for f in feedbacks %}
+                <div class="card mb-2">
+                    <div class="card-body py-2">
+                        <strong>{{ f.user.fullName }}</strong>
+                        <span class="text-warning ms-2">
+                            {% for i in 1..f.rating %}⭐{% endfor %}
+                        </span>
+                        <p class="mb-0 small text-muted">{{ f.content }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
 
-#[ORM\Entity(repositoryClass: EvenementRepository::class)]
-class Evenement
-{
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+        {% if isRegistered %}
+            <hr>
+            <h5>Laisser un feedback</h5>
+            <form method="post" action="{{ path('app_feedback_new', {id: event.id}) }}">
+                <div class="mb-2">
+                    <label class="form-label">Note</label>
+                    <select name="rating" class="form-select" required>
+                        <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                        <option value="4">⭐⭐⭐⭐ Bien</option>
+                        <option value="3">⭐⭐⭐ Moyen</option>
+                        <option value="2">⭐⭐ Mauvais</option>
+                        <option value="1">⭐ Très mauvais</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Commentaire</label>
+                    <textarea name="content" class="form-control" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-outline-primary btn-sm">
+                    Envoyer le feedback
+                </button>
+            </form>
+        {% endif %}
 
-    #[ORM\Column(length: 200)]
-    private ?string $nomEvenement = null;
-
-    #[ORM\Column]
-    private ?\DateTime $dateDebut = null;
-
-    #[ORM\Column]
-    private ?\DateTime $dateFin = null;
-
-    #[ORM\Column(length: 200)]
-    private ?string $lieu = null;
-
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $description = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $image = null;
-
-    #[ORM\Column(length: 50)]
-    private ?string $status = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\ManyToOne(inversedBy: 'evenements')]
-    private ?Club $club = null;
-
-    /**
-     * @var Collection<int, Participation>
-     */
-    #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'evenement')]
-    private Collection $participations;
-
-    /**
-     * @var Collection<int, Feedback>
-     */
-    #[ORM\OneToMany(targetEntity: Feedback::class, mappedBy: 'event')]
-    private Collection $feedback;
-
-    public function __construct()
-    {
-        $this->participations = new ArrayCollection();
-        $this->feedback = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getNomEvenement(): ?string
-    {
-        return $this->nomEvenement;
-    }
-
-    public function setNomEvenement(string $nomEvenement): static
-    {
-        $this->nomEvenement = $nomEvenement;
-
-        return $this;
-    }
-
-    public function getDateDebut(): ?\DateTime
-    {
-        return $this->dateDebut;
-    }
-
-    public function setDateDebut(\DateTime $dateDebut): static
-    {
-        $this->dateDebut = $dateDebut;
-
-        return $this;
-    }
-
-    public function getDateFin(): ?\DateTime
-    {
-        return $this->dateFin;
-    }
-
-    public function setDateFin(\DateTime $dateFin): static
-    {
-        $this->dateFin = $dateFin;
-
-        return $this;
-    }
-
-    public function getLieu(): ?string
-    {
-        return $this->lieu;
-    }
-
-    public function setLieu(string $lieu): static
-    {
-        $this->lieu = $lieu;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(?string $image): static
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    public function setStatus(string $status): static
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getClub(): ?Club
-    {
-        return $this->club;
-    }
-
-    public function setClub(?Club $club): static
-    {
-        $this->club = $club;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Participation>
-     */
-    public function getParticipations(): Collection
-    {
-        return $this->participations;
-    }
-
-    public function addParticipation(Participation $participation): static
-    {
-        if (!$this->participations->contains($participation)) {
-            $this->participations->add($participation);
-            $participation->setEvenement($this);
-        }
-
-        return $this;
-    }
-
-    public function removeParticipation(Participation $participation): static
-    {
-        if ($this->participations->removeElement($participation)) {
-            // set the owning side to null (unless already changed)
-            if ($participation->getEvenement() === $this) {
-                $participation->setEvenement(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Feedback>
-     */
-    public function getFeedback(): Collection
-    {
-        return $this->feedback;
-    }
-
-    public function addFeedback(Feedback $feedback): static
-    {
-        if (!$this->feedback->contains($feedback)) {
-            $this->feedback->add($feedback);
-            $feedback->setEvent($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFeedback(Feedback $feedback): static
-    {
-        if ($this->feedback->removeElement($feedback)) {
-            // set the owning side to null (unless already changed)
-            if ($feedback->getEvent() === $this) {
-                $feedback->setEvent(null);
-            }
-        }
-
-        return $this;
-    }
-}
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header"><strong>Club organisateur</strong></div>
+            <div class="card-body text-center">
+                <h5>{{ event.club.name }}</h5>
+                <span class="badge bg-secondary">{{ event.club.domain }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

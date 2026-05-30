@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+{% block title %}Candidatures reçues{% endblock %}
+{% block body %}
+<h2 class="mb-4">📋 Candidatures reçues</h2>
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-dark">
+            <tr><th>Candidat</th><th>Poste</th><th>Date</th><th>CV</th><th>Statut</th></tr>
+        </thead>
+        <tbody>
+            {% for c in candidatures %}
+                <tr>
+                    <td>{{ c.user.fullName }}</td>
+                    <td>{{ c.recrutement.title }}</td>
+                    <td>{{ c.submittedAt|date('d/m/Y') }}</td>
+                    <td>
+                        {% if c.cvFilename %}
+                            <a href="/uploads/cv/{{ c.cvFilename }}" target="_blank"
+                               class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-file-pdf"></i> CV
+                            </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge {{
+                            c.status == 'accepted' ? 'bg-success' :
+                            (c.status == 'rejected' ? 'bg-danger' : 'bg-warning text-dark')
+                        }}">{{ c.status }}</span>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5" class="text-center">Aucune candidature.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

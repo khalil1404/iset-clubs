@@ -18,16 +18,8 @@
                         <i class="bi bi-people"></i> Clubs
                     </a>
                 </li>
-                {% if is_granted('ROLE_USER') and app.user %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_my_clubs') }}">
-                            <i class="bi bi-bookmark-heart"></i> Mes clubs
-                        </a>
-                    </li>
-                {% endif %}
-                {# Ces liens seront activés dans Day 3 #}
-                {# <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_event_index') }}">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_admin_events') }}">
                         <i class="bi bi-calendar-event"></i> Événements
                     </a>
                 </li>
@@ -35,7 +27,12 @@
                     <a class="nav-link" href="{{ path('app_recruitment_index') }}">
                         <i class="bi bi-briefcase"></i> Recrutements
                     </a>
-                </li> #}
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_reclamation_index') }}">
+                        <i class="bi bi-chat-left-text"></i> Réclamations
+                    </a>
+                </li>
             </ul>
             <ul class="navbar-nav ms-auto">
                 {% if app.user %}

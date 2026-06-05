@@ -21,16 +21,22 @@ class AdminController extends AbstractController
     public function dashboard(
         ClubRepository $clubRepo,
         UserRepository $userRepo,
-        EvenementRepository $eventRepo
+        EvenementRepository $eventRepo,
+        CandidatureRepository $candRepo,
+        ReclamationRepository $reclRepo
     ): Response {
         return $this->render('admin/dashboard.html.twig', [
-            'totalClubs'    => count($clubRepo->findAll()),
-            'pendingClubs'  => count($clubRepo->findBy(['status' => 'pending'])),
-            'totalUsers'    => count($userRepo->findAll()),
-            'totalEvents'   => count($eventRepo->findAll()),
-            'pendingEvents' => count($eventRepo->findBy(['status' => 'pending'])),
-            'recentClubs'   => $clubRepo->findBy([], ['id' => 'DESC'], 5),
-            'recentUsers'   => $userRepo->findBy([], ['id' => 'DESC'], 5),
+            'totalClubs'          => count($clubRepo->findAll()),
+            'pendingClubs'        => count($clubRepo->findBy(['status' => 'pending'])),
+            'totalUsers'          => count($userRepo->findAll()),
+            'totalEvents'         => count($eventRepo->findAll()),
+            'pendingEvents'       => count($eventRepo->findBy(['status' => 'pending'])),
+            'totalCandidatures'   => count($candRepo->findAll()),
+            'pendingCandidatures' => count($candRepo->findBy(['status' => 'pending'])),
+            'totalReclamations'   => count($reclRepo->findAll()),
+            'pendingReclamations' => count($reclRepo->findBy(['status' => 'pending'])),
+            'recentClubs'         => $clubRepo->findBy([], ['id' => 'DESC'], 5),
+            'recentUsers'         => $userRepo->findBy([], ['id' => 'DESC'], 5),
         ]);
     }
 

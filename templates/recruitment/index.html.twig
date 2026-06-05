@@ -16,7 +16,9 @@
                 <div class="card-body">
                     <h5>{{ offer.title }}</h5>
                     <span class="badge bg-success">{{ offer.club.name }}</span>
-                    <p class="text-muted small mt-2">{{ offer.description|slice(0,100) }}...</p>
+                    <p class="text-muted small mt-2">
+                        {{ offer.description|slice(0,100) }}...
+                    </p>
                     <p class="text-danger small">
                         <i class="bi bi-clock"></i>
                         Deadline : {{ offer.deadline|date('d/m/Y') }}

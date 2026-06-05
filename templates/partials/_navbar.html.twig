@@ -1,8 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container">
         <a class="navbar-brand" href="{{ path('app_home') }}">🎓 ISET Clubs</a>
-        <button class="navbar-toggler" type="button"
-                data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navMenu">
@@ -22,11 +21,11 @@
                         <i class="bi bi-calendar-event"></i> Événements
                     </a>
                 </li>
-                {# <li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_recruitment_index') }}">
                         <i class="bi bi-briefcase"></i> Recrutements
                     </a>
-                </li> #}
+                </li>
             </ul>
             <ul class="navbar-nav ms-auto">
                 {% if app.user %}
@@ -69,16 +68,21 @@
                                     <i class="bi bi-award"></i> Mes clubs
                                 </a>
                             </li>
-                            {# <li>
+                            <li>
+                                <a class="dropdown-item" href="{{ path('app_my_events') }}">
+                                    <i class="bi bi-calendar-check"></i> Mes événements
+                                </a>
+                            </li>
+                            <li>
                                 <a class="dropdown-item" href="{{ path('app_my_applications') }}">
                                     <i class="bi bi-briefcase"></i> Mes candidatures
                                 </a>
-                            </li> #}
-                            {# <li>
+                            </li>
+                            <li>
                                 <a class="dropdown-item" href="{{ path('app_reclamation_index') }}">
                                     <i class="bi bi-chat-dots"></i> Mes réclamations
                                 </a>
-                            </li> #}
+                            </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item text-danger"

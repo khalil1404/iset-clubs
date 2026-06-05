@@ -1,37 +1,75 @@
 {% extends 'base.html.twig' %}
-{% block title %}Recrutements{% endblock %}
+{% block title %}Recrutements — ISET Clubs{% endblock %}
+
 {% block body %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>💼 Offres de recrutement</h1>
-    {% if is_granted('ROLE_PRESIDENT') %}
-        <a href="{{ path('app_recruitment_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Publier une offre
-        </a>
-    {% endif %}
+
+{# HEADER #}
+<div class="rounded-4 text-white mb-5 p-4"
+     style="background: linear-gradient(135deg, #1a1a2e 0%, #6f42c1 100%);">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="fw-bold mb-1">💼 Offres de recrutement</h1>
+            <p class="mb-0 opacity-75">Postulez aux offres des clubs et développez votre carrière</p>
+        </div>
+        {% if is_granted('ROLE_PRESIDENT') %}
+            <a href="{{ path('app_recruitment_new') }}" class="btn btn-warning fw-bold px-4">
+                <i class="bi bi-plus-circle"></i> Publier une offre
+            </a>
+        {% endif %}
+    </div>
 </div>
-<div class="row g-3">
+
+{# OFFERS GRID #}
+<div class="row g-4">
     {% for offer in offers %}
         <div class="col-md-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5>{{ offer.title }}</h5>
-                    <span class="badge bg-success">{{ offer.club.name }}</span>
-                    <p class="text-muted small mt-2">
-                        {{ offer.description|slice(0,100) }}...
-                    </p>
-                    <p class="text-danger small">
-                        <i class="bi bi-clock"></i>
-                        Deadline : {{ offer.deadline|date('d/m/Y') }}
-                    </p>
+            <div class="card h-100 border-0 shadow-sm" style="border-radius:16px; transition: transform 0.2s, box-shadow 0.2s;"
+                 onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 25px rgba(0,0,0,0.15)'"
+                 onmouseout="this.style.transform='translateY(0)';this.style.boxShadow=''">
+                <div class="card-body p-4">
+
+                    <div class="d-flex align-items-start justify-content-between mb-3">
+                        <div class="rounded-3 d-flex align-items-center justify-content-center text-white flex-shrink-0"
+                             style="width:55px;height:55px;background:linear-gradient(135deg,#6f42c1,#8f94fb)">
+                            <i class="bi bi-briefcase-fill fs-4"></i>
+                        </div>
+                        <span class="badge rounded-pill bg-danger px-3 py-2">
+                            <i class="bi bi-clock"></i> {{ offer.deadline|date('d/m/Y') }}
+                        </span>
+                    </div>
+
+                    <h5 class="fw-bold mb-2">{{ offer.title }}</h5>
+
+                    <span class="badge rounded-pill mb-3 px-3" style="background:#28a745">
+                        <i class="bi bi-people"></i> {{ offer.club.name }}
+                    </span>
+
+                    <p class="text-muted small mb-0">{{ offer.description|slice(0,120) }}...</p>
                 </div>
-                <div class="card-footer bg-transparent">
+
+                <div class="card-footer bg-transparent border-0 pb-4 px-4">
                     <a href="{{ path('app_recruitment_show', {id: offer.id}) }}"
-                       class="btn btn-outline-primary btn-sm">Voir l'offre</a>
+                       class="btn w-100 rounded-pill fw-bold text-white"
+                       style="background:linear-gradient(135deg,#6f42c1,#8f94fb)">
+                        <i class="bi bi-arrow-right-circle"></i> Voir l'offre
+                    </a>
                 </div>
             </div>
         </div>
     {% else %}
-        <div class="alert alert-info">Aucune offre disponible.</div>
+        <div class="col-12">
+            <div class="alert alert-info rounded-4 text-center p-5">
+                <i class="bi bi-briefcase fs-1 d-block mb-3 text-muted"></i>
+                <h5>Aucune offre disponible pour le moment.</h5>
+                {% if is_granted('ROLE_PRESIDENT') %}
+                    <a href="{{ path('app_recruitment_new') }}" class="btn mt-2"
+                       style="background:#6f42c1; color:white;">
+                        Publier la première offre
+                    </a>
+                {% endif %}
+            </div>
+        </div>
     {% endfor %}
 </div>
+
 {% endblock %}

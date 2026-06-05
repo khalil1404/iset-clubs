@@ -49,7 +49,7 @@ class FeedbackController extends AbstractController
             $feedback->setEvent($event);
             $feedback->setContent($request->request->get('content'));
             $feedback->setRating((int) $request->request->get('rating'));
-            $feedback->setCreatedAt(new \DateTime());
+            $feedback->setCreatedAt(new \DateTimeImmutable());
             $em->persist($feedback);
             $em->flush();
             $this->addFlash('success', 'Feedback envoyé !');

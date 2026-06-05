@@ -1,92 +1,179 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ event.nomEvenement }}{% endblock %}
+
 {% block body %}
-<div class="row">
-    <div class="col-md-8">
-        {% if event.image %}
-            <img src="/uploads/events/{{ event.image }}"
-                 class="img-fluid rounded mb-3" style="max-height:300px;width:100%;object-fit:cover">
-        {% endif %}
-        <h2>{{ event.nomEvenement }}</h2>
-        <p class="text-muted">
-            <i class="bi bi-calendar3"></i> {{ event.dateDebut|date('d/m/Y H:i') }}
-            &nbsp;→&nbsp; {{ event.dateFin|date('d/m/Y H:i') }}
-            &nbsp;|&nbsp;
-            <i class="bi bi-geo-alt"></i> {{ event.lieu }}
-            &nbsp;|&nbsp;
-            <i class="bi bi-people"></i> {{ participants|length }} participants
-        </p>
-        <p>{{ event.description }}</p>
 
-        {% if is_granted('ROLE_USER') %}
-            {% if not isRegistered %}
-                <form method="post" action="{{ path('app_event_register', {id: event.id}) }}">
-                    <button type="submit" class="btn btn-success">
-                        <i class="bi bi-calendar-check"></i> S'inscrire
-                    </button>
-                </form>
-            {% else %}
-                <form method="post" action="{{ path('app_event_unregister', {id: event.id}) }}">
-                    <button type="submit" class="btn btn-outline-danger">
-                        <i class="bi bi-calendar-x"></i> Se désinscrire
-                    </button>
-                </form>
-            {% endif %}
-        {% endif %}
-
-        {% set feedbacks = event.feedback %}
-        {% if feedbacks|length > 0 %}
-            <hr>
-            <h5>⭐ Feedbacks ({{ feedbacks|length }})</h5>
-            {% set total = 0 %}
-            {% for f in feedbacks %}{% set total = total + f.rating %}{% endfor %}
-            <p class="text-muted">Note moyenne : <strong>{{ (total / feedbacks|length)|round(1) }}/5</strong></p>
-            {% for f in feedbacks %}
-                <div class="card mb-2">
-                    <div class="card-body py-2">
-                        <strong>{{ f.user.fullName }}</strong>
-                        <span class="text-warning ms-2">
-                            {% for i in 1..f.rating %}⭐{% endfor %}
-                        </span>
-                        <p class="mb-0 small text-muted">{{ f.content }}</p>
-                    </div>
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        {% if isRegistered %}
-            <hr>
-            <h5>Laisser un feedback</h5>
-            <form method="post" action="{{ path('app_feedback_new', {id: event.id}) }}">
-                <div class="mb-2">
-                    <label class="form-label">Note</label>
-                    <select name="rating" class="form-select" required>
-                        <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
-                        <option value="4">⭐⭐⭐⭐ Bien</option>
-                        <option value="3">⭐⭐⭐ Moyen</option>
-                        <option value="2">⭐⭐ Mauvais</option>
-                        <option value="1">⭐ Très mauvais</option>
-                    </select>
-                </div>
-                <div class="mb-2">
-                    <label class="form-label">Commentaire</label>
-                    <textarea name="content" class="form-control" rows="3" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-outline-primary btn-sm">
-                    Envoyer le feedback
-                </button>
-            </form>
-        {% endif %}
-
-    </div>
-    <div class="col-md-4">
-        <div class="card shadow-sm">
-            <div class="card-header"><strong>Club organisateur</strong></div>
-            <div class="card-body text-center">
-                <h5>{{ event.club.name }}</h5>
-                <span class="badge bg-secondary">{{ event.club.domain }}</span>
+{# HEADER BANNER #}
+<div class="rounded-4 text-white mb-5 p-4"
+     style="background: linear-gradient(135deg, #1a4731 0%, #28a745 100%);">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+        <div class="rounded-3 d-flex align-items-center justify-content-center text-white flex-shrink-0"
+             style="width:60px;height:60px;background:rgba(255,255,255,0.2)">
+            <i class="bi bi-calendar-event-fill fs-3"></i>
+        </div>
+        <div>
+            <h2 class="fw-bold mb-1">{{ event.nomEvenement }}</h2>
+            <div class="d-flex flex-wrap gap-3 opacity-85 small">
+                <span><i class="bi bi-calendar3"></i> {{ event.dateDebut|date('d/m/Y H:i') }} → {{ event.dateFin|date('d/m/Y H:i') }}</span>
+                <span><i class="bi bi-geo-alt"></i> {{ event.lieu }}</span>
+                <span><i class="bi bi-people"></i> {{ participants|length }} participants</span>
             </div>
         </div>
     </div>
+</div>
+
+<div class="row g-4">
+
+    {# LEFT CONTENT #}
+    <div class="col-md-8">
+
+        {# IMAGE #}
+        {% if event.image %}
+            <img src="/uploads/events/{{ event.image }}"
+                 class="img-fluid rounded-4 mb-4 w-100"
+                 style="max-height:300px; object-fit:cover;">
+        {% endif %}
+
+        {# DESCRIPTION #}
+        <div class="card border-0 shadow-sm mb-4" style="border-radius:16px;">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-info-circle text-success"></i> Description</h5>
+                <p class="text-muted mb-0">{{ event.description }}</p>
+            </div>
+        </div>
+
+        {# REGISTER / UNREGISTER #}
+        {% if is_granted('ROLE_USER') %}
+            <div class="card border-0 shadow-sm mb-4" style="border-radius:16px;">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-calendar-check text-success"></i> Participation</h5>
+                    {% if not isRegistered %}
+                        <form method="post" action="{{ path('app_event_register', {id: event.id}) }}">
+                            <button type="submit" class="btn btn-success px-5 rounded-pill fw-bold">
+                                <i class="bi bi-calendar-check"></i> S'inscrire à l'événement
+                            </button>
+                        </form>
+                    {% else %}
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="badge bg-success px-3 py-2 rounded-pill fs-6">
+                                <i class="bi bi-check-circle"></i> Vous êtes inscrit
+                            </span>
+                            <form method="post" action="{{ path('app_event_unregister', {id: event.id}) }}">
+                                <button type="submit" class="btn btn-outline-danger rounded-pill px-4">
+                                    <i class="bi bi-calendar-x"></i> Se désinscrire
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+        {# FEEDBACKS #}
+        {% set feedbacks = event.feedback %}
+        {% if feedbacks|length > 0 %}
+            <div class="card border-0 shadow-sm mb-4" style="border-radius:16px;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h5 class="fw-bold mb-0">⭐ Feedbacks ({{ feedbacks|length }})</h5>
+                        {% set total = 0 %}
+                        {% for f in feedbacks %}{% set total = total + f.rating %}{% endfor %}
+                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fs-6">
+                            {{ (total / feedbacks|length)|round(1) }}/5
+                        </span>
+                    </div>
+                    {% for f in feedbacks %}
+                        <div class="card border-0 mb-3" style="background:#f8f9fa; border-radius:12px;">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong>{{ f.user.fullName }}</strong>
+                                    <span class="text-warning">
+                                        {% for i in 1..f.rating %}⭐{% endfor %}
+                                    </span>
+                                </div>
+                                <p class="mb-0 small text-muted">{{ f.content }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {# FEEDBACK FORM #}
+        {% if isRegistered %}
+            <div class="card border-0 shadow-sm" style="border-radius:16px;">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">💬 Laisser un feedback</h5>
+                    <form method="post" action="{{ path('app_feedback_new', {id: event.id}) }}">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Note</label>
+                            <select name="rating" class="form-select" style="border-radius:10px;" required>
+                                <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                                <option value="4">⭐⭐⭐⭐ Bien</option>
+                                <option value="3">⭐⭐⭐ Moyen</option>
+                                <option value="2">⭐⭐ Mauvais</option>
+                                <option value="1">⭐ Très mauvais</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Commentaire</label>
+                            <textarea name="content" class="form-control" rows="3"
+                                      style="border-radius:10px;" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4">
+                            <i class="bi bi-send"></i> Envoyer
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+
+    {# RIGHT SIDEBAR #}
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm mb-4" style="border-radius:16px;">
+            <div class="card-body p-4 text-center">
+                <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                     style="width:70px;height:70px;background:linear-gradient(135deg,#4e54c8,#8f94fb)">
+                    <i class="bi bi-people-fill text-white fs-3"></i>
+                </div>
+                <h5 class="fw-bold">{{ event.club.name }}</h5>
+                <span class="badge rounded-pill px-3" style="background:#4e54c8">
+                    {{ event.club.domain }}
+                </span>
+                <p class="text-muted small mt-3 mb-0">Club organisateur</p>
+            </div>
+        </div>
+
+        {# EVENT INFO #}
+        <div class="card border-0 shadow-sm" style="border-radius:16px;">
+            <div class="card-body p-4">
+                <h6 class="fw-bold mb-3">📋 Détails</h6>
+                <div class="d-flex gap-2 mb-3 p-3 rounded-3" style="background:#f8f9fa;">
+                    <i class="bi bi-calendar3 text-success fs-5"></i>
+                    <div>
+                        <small class="text-muted d-block">Début</small>
+                        <strong class="small">{{ event.dateDebut|date('d/m/Y H:i') }}</strong>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 mb-3 p-3 rounded-3" style="background:#f8f9fa;">
+                    <i class="bi bi-calendar-check text-danger fs-5"></i>
+                    <div>
+                        <small class="text-muted d-block">Fin</small>
+                        <strong class="small">{{ event.dateFin|date('d/m/Y H:i') }}</strong>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 p-3 rounded-3" style="background:#f8f9fa;">
+                    <i class="bi bi-geo-alt-fill text-primary fs-5"></i>
+                    <div>
+                        <small class="text-muted d-block">Lieu</small>
+                        <strong class="small">{{ event.lieu }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 {% endblock %}

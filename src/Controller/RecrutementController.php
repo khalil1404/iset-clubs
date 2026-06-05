@@ -47,7 +47,7 @@ class RecrutementController extends AbstractController
                   ->setRequirements($request->request->get('requirements'))
                   ->setDeadline(new \DateTime($request->request->get('deadline')))
                   ->setStatus('open')
-                  ->setCreatedAt(new \DateTime())
+                  ->setCreatedAt(new \DateTimeImmutable())
                   ->setClub($club);
 
             $em->persist($offer);
@@ -83,7 +83,7 @@ class RecrutementController extends AbstractController
              ->setRecrutement($recrutement)
              ->setMessage($request->request->get('message'))
              ->setStatus('pending')
-             ->setSubmittedAt(new \DateTime());
+             ->setSubmittedAt(new \DateTimeImmutable());
 
         $cv = $request->files->get('cv');
         if ($cv) {

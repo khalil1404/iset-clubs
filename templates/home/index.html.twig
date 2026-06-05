@@ -2,75 +2,153 @@
 {% block title %}Accueil — ISET Clubs{% endblock %}
 
 {% block body %}
-<div class="p-5 mb-4 rounded-3 text-white"
-     style="background: linear-gradient(135deg, #4e54c8, #8f94fb);">
-    <div class="container-fluid py-3">
-        <h1 class="display-5 fw-bold">🎓 ISET Clubs</h1>
-        <p class="col-md-8 fs-4">
-            Découvrez les clubs, participez aux événements et rejoignez la communauté.
-        </p>
-        {% if not app.user %}
-            <a href="{{ path('app_register') }}" class="btn btn-light btn-lg me-2">
-                Rejoindre la plateforme
-            </a>
-            <a href="{{ path('app_login') }}" class="btn btn-outline-light btn-lg">
-                Se connecter
-            </a>
-        {% else %}
-            <a href="{{ path('app_club_index') }}" class="btn btn-light btn-lg">
-                Voir tous les clubs
-            </a>
-        {% endif %}
+
+{# HERO #}
+<div class="rounded-4 text-white mb-5 p-5"
+     style="background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <span class="badge bg-warning text-dark mb-3 px-3 py-2">ISET Zaghouan 2025/2026</span>
+            <h1 class="display-5 fw-bold mb-3">Bienvenue sur <span style="color:#8f94fb">ISET Clubs</span></h1>
+            <p class="fs-6 mb-4 opacity-75">
+                Découvrez les clubs, participez aux événements et développez vos compétences au sein de la communauté ISET.
+            </p>
+            {% if not app.user %}
+                <a href="{{ path('app_register') }}" class="btn btn-warning fw-bold me-2 px-4">
+                    <i class="bi bi-person-plus"></i> Rejoindre
+                </a>
+                <a href="{{ path('app_login') }}" class="btn btn-outline-light px-4">
+                    <i class="bi bi-box-arrow-in-right"></i> Se connecter
+                </a>
+            {% else %}
+                <a href="{{ path('app_club_index') }}" class="btn btn-warning fw-bold me-2 px-4">
+                    <i class="bi bi-people"></i> Voir les clubs
+                </a>
+                <a href="{{ path('app_event_index') }}" class="btn btn-outline-light px-4">
+                    <i class="bi bi-calendar-event"></i> Événements
+                </a>
+            {% endif %}
+        </div>
+        <div class="col-md-4 text-center d-none d-md-block">
+            <i class="bi bi-mortarboard-fill" style="font-size:8rem; opacity:0.15;"></i>
+        </div>
     </div>
 </div>
 
+{# STATS #}
+<div class="row g-3 mb-5">
+    <div class="col-6 col-md-3">
+        <div class="card text-center border-0 shadow-sm h-100 py-3" style="border-radius:16px; border-top: 4px solid #4e54c8 !important;">
+            <i class="bi bi-people-fill fs-2 mb-2" style="color:#4e54c8"></i>
+            <h4 class="fw-bold mb-0">{{ clubs|length }}</h4>
+            <small class="text-muted">Clubs actifs</small>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center border-0 shadow-sm h-100 py-3" style="border-radius:16px; border-top: 4px solid #28a745 !important;">
+            <i class="bi bi-calendar-event-fill fs-2 mb-2" style="color:#28a745"></i>
+            <h4 class="fw-bold mb-0">{{ events|length }}</h4>
+            <small class="text-muted">Événements</small>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center border-0 shadow-sm h-100 py-3" style="border-radius:16px; border-top: 4px solid #ffc107 !important;">
+            <i class="bi bi-briefcase-fill fs-2 mb-2" style="color:#ffc107"></i>
+            <h4 class="fw-bold mb-0">{{ clubs|length }}</h4>
+            <small class="text-muted">Recrutements</small>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center border-0 shadow-sm h-100 py-3" style="border-radius:16px; border-top: 4px solid #dc3545 !important;">
+            <i class="bi bi-geo-alt-fill fs-2 mb-2" style="color:#dc3545"></i>
+            <h4 class="fw-bold mb-0">Zaghouan</h4>
+            <small class="text-muted">ISET Campus</small>
+        </div>
+    </div>
+</div>
+
+{# CLUBS #}
 <section class="mb-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>🏆 Clubs actifs</h2>
-        <a href="{{ path('app_club_index') }}" class="btn btn-outline-primary btn-sm">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">🏆 Clubs actifs</h2>
+        <a href="{{ path('app_club_index') }}" class="btn btn-outline-primary btn-sm px-3">
             Voir tout <i class="bi bi-arrow-right"></i>
         </a>
     </div>
-    <div class="row g-3">
+    <div class="row g-4">
         {% for club in clubs %}
             <div class="col-md-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        {% if club.logo %}
-                            <img src="/uploads/logos/{{ club.logo }}"
-                                 class="rounded-circle mb-3"
-                                 width="80" height="80" style="object-fit:cover">
-                        {% else %}
-                            <div class="bg-primary rounded-circle d-inline-flex
-                                        align-items-center justify-content-center mb-3"
-                                 style="width:80px;height:80px">
-                                <i class="bi bi-people-fill text-white fs-2"></i>
-                            </div>
-                        {% endif %}
-                        <h5>{{ club.name }}</h5>
-                        <span class="badge bg-secondary">{{ club.domain }}</span>
-                        <p class="text-muted mt-2 small">
-                            {{ club.description|slice(0,80) }}...
-                        </p>
-                    </div>
-                    <div class="card-footer bg-transparent text-center">
+                <div class="card h-100 border-0 shadow-sm text-center p-3" style="border-radius:16px;">
+                    {% if club.logo %}
+                        <img src="/uploads/logos/{{ club.logo }}"
+                             class="rounded-circle mx-auto mt-3 border border-3 border-primary"
+                             width="80" height="80" style="object-fit:cover">
+                    {% else %}
+                        <div class="rounded-circle mx-auto mt-3 d-flex align-items-center justify-content-center"
+                             style="width:80px;height:80px;background:linear-gradient(135deg,#4e54c8,#8f94fb)">
+                            <i class="bi bi-people-fill text-white fs-3"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="fw-bold">{{ club.name }}</h5>
+                        <span class="badge rounded-pill mb-2" style="background:#4e54c8">{{ club.domain }}</span>
+                        <p class="text-muted small">{{ club.description|slice(0,80) }}...</p>
                         <a href="{{ path('app_club_show', {id: club.id}) }}"
-                           class="btn btn-outline-primary btn-sm">Voir le club</a>
+                           class="btn btn-primary btn-sm px-4 rounded-pill">Voir le club</a>
                     </div>
                 </div>
             </div>
         {% else %}
-            <p class="text-muted">Aucun club disponible.</p>
+            <div class="alert alert-info">Aucun club disponible.</div>
         {% endfor %}
     </div>
 </section>
 
+{# EVENTS #}
 <section class="mb-5">
-    <h2 class="mb-3">📅 Prochains événements</h2>
-    {% for event in events %}
-        <p>{{ event.nomEvenement }}</p>
-    {% else %}
-        <div class="alert alert-info">Aucun événement à venir pour le moment.</div>
-    {% endfor %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">📅 Prochains événements</h2>
+        <a href="{{ path('app_event_index') }}" class="btn btn-outline-success btn-sm px-3">
+            Voir tout <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+    <div class="row g-3">
+        {% for event in events %}
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100" style="border-radius:16px;">
+                    <div class="card-body d-flex gap-3 align-items-start p-4">
+                        <div class="rounded-3 text-white text-center p-3 flex-shrink-0"
+                             style="background:linear-gradient(135deg,#28a745,#20c997); min-width:60px;">
+                            <div class="fw-bold fs-5">{{ event.dateDebut|date('d') }}</div>
+                            <div class="small text-uppercase">{{ event.dateDebut|date('M') }}</div>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">{{ event.nomEvenement }}</h6>
+                            <p class="text-muted small mb-1">
+                                <i class="bi bi-geo-alt"></i> {{ event.lieu }}
+                            </p>
+                            <a href="{{ path('app_event_show', {id: event.id}) }}"
+                               class="btn btn-sm btn-outline-success rounded-pill">Détails</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-info">Aucun événement à venir.</div>
+        {% endfor %}
+    </div>
 </section>
+
+{# CTA #}
+{% if not app.user %}
+<section class="text-center py-5 rounded-4 mb-4"
+         style="background: linear-gradient(135deg, #4e54c8, #8f94fb);">
+    <h3 class="text-white fw-bold mb-2">Prêt à rejoindre la communauté ?</h3>
+    <p class="text-white opacity-75 mb-4">Inscrivez-vous gratuitement et accédez à tous les clubs.</p>
+    <a href="{{ path('app_register') }}" class="btn btn-warning btn-lg fw-bold px-5 rounded-pill">
+        <i class="bi bi-person-plus"></i> S'inscrire maintenant
+    </a>
+</section>
+{% endif %}
+
 {% endblock %}

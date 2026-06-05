@@ -141,3 +141,4 @@ class AppFixtures extends Fixture
         echo "✅ Fixtures chargées !\n";
     }
 }
+

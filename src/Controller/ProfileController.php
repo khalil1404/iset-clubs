@@ -33,13 +33,20 @@ class ProfileController extends AbstractController
         $user = $this->getUser();
 
         if ($request->isMethod('POST')) {
-            $user->setFirstname($request->request->get('firstname'));
-            $user->setLastname($request->request->get('lastname'));
+            $firstname = trim($request->request->get('firstname', ''));
+            $lastname = trim($request->request->get('lastname', ''));
+
+            if ($firstname !== '') {
+                $user->setFirstname($firstname);
+            }
+            if ($lastname !== '') {
+                $user->setLastname($lastname);
+            }
 
             $photoFile = $request->files->get('photo');
-            if ($photoFile) {
-                $filename = $slugger->slug($user->getFirstname()).'-'.uniqid()
-                           .'.'.$photoFile->guessExtension();
+            if ($photoFile && $photoFile->isValid()) {
+                $safeFilename = $slugger->slug($user->getFirstname());
+                $filename = $safeFilename . '-' . uniqid() . '.' . $photoFile->guessExtension();
                 $photoFile->move(
                     $this->getParameter('profiles_directory'),
                     $filename
@@ -47,6 +54,7 @@ class ProfileController extends AbstractController
                 $user->setProfilePicture($filename);
             }
 
+            $em->persist($user);
             $em->flush();
             $this->addFlash('success', 'Profil mis à jour !');
             return $this->redirectToRoute('app_profile');
@@ -55,4 +63,3 @@ class ProfileController extends AbstractController
         return $this->render('profile/edit.html.twig', ['user' => $user]);
     }
 }
-

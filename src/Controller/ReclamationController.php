@@ -32,7 +32,7 @@ class ReclamationController extends AbstractController
               ->setSubject($request->request->get('subject'))
               ->setMessage($request->request->get('message'))
               ->setStatus('pending')
-              ->setCreatedAt(new \DateTime());
+              ->setCreatedAt(new \DateTimeImmutable());
             $em->persist($r);
             $em->flush();
             $this->addFlash('success', 'Réclamation envoyée !');

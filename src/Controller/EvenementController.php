@@ -24,6 +24,51 @@ class EvenementController extends AbstractController
         return $this->render('event/index.html.twig', ['events' => $events]);
     }
 
+    #[Route('/new', name: 'app_event_new')]
+    #[IsGranted('ROLE_PRESIDENT')]
+    public function new(
+        Request $request,
+        EntityManagerInterface $em,
+        SluggerInterface $slugger
+    ): Response {
+        if ($request->isMethod('POST')) {
+            $event = new Evenement();
+            $event->setNomEvenement($request->request->get('nomEvenement'));
+            $event->setDescription($request->request->get('description'));
+            $event->setLieu($request->request->get('lieu'));
+            $event->setDateDebut(new \DateTime($request->request->get('dateDebut')));
+            $event->setDateFin(new \DateTime($request->request->get('dateFin')));
+            $event->setStatus('pending');
+            $event->setCreatedAt(new \DateTimeImmutable());
+
+            $clubRepo = $em->getRepository(\App\Entity\Club::class);
+            $club = $clubRepo->findOneBy(['proposedBy' => $this->getUser()]);
+            $event->setClub($club);
+
+            $imageFile = $request->files->get('image');
+            if ($imageFile && $imageFile->isValid()) {
+                $filename = 'event-' . uniqid() . '.' . $imageFile->guessExtension();
+                $imageFile->move($this->getParameter('events_directory'), $filename);
+                $event->setImage($filename);
+            }
+
+            $em->persist($event);
+            $em->flush();
+            $this->addFlash('success', 'Événement soumis ! En attente de validation.');
+            return $this->redirectToRoute('app_event_index');
+        }
+        return $this->render('event/new.html.twig');
+    }
+
+    #[Route('/my-events', name: 'app_my_events')]
+    #[IsGranted('ROLE_USER')]
+    public function myEvents(ParticipationRepository $partRepo): Response
+    {
+        return $this->render('event/my_events.html.twig', [
+            'participations' => $partRepo->findBy(['user' => $this->getUser()])
+        ]);
+    }
+
     #[Route('/{id}', name: 'app_event_show', requirements: ['id' => '\d+'])]
     public function show(Evenement $event, ParticipationRepository $partRepo): Response
     {
@@ -42,42 +87,6 @@ class EvenementController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_event_new')]
-    #[IsGranted('ROLE_PRESIDENT')]
-    public function new(
-        Request $request,
-        EntityManagerInterface $em,
-        SluggerInterface $slugger
-    ): Response {
-        if ($request->isMethod('POST')) {
-            $event = new Evenement();
-            $event->setNomEvenement($request->request->get('nomEvenement'));
-            $event->setDescription($request->request->get('description'));
-            $event->setLieu($request->request->get('lieu'));
-            $event->setDateDebut(new \DateTime($request->request->get('dateDebut')));
-            $event->setDateFin(new \DateTime($request->request->get('dateFin')));
-            $event->setStatus('pending');
-            $event->setCreatedAt(new \DateTime());
-
-            $clubRepo = $em->getRepository(\App\Entity\Club::class);
-            $club = $clubRepo->findOneBy(['proposedBy' => $this->getUser()]);
-            $event->setClub($club);
-
-            $imageFile = $request->files->get('image');
-            if ($imageFile) {
-                $filename = $slugger->slug('event').'-'.uniqid().'.'.$imageFile->guessExtension();
-                $imageFile->move($this->getParameter('events_directory'), $filename);
-                $event->setImage($filename);
-            }
-
-            $em->persist($event);
-            $em->flush();
-            $this->addFlash('success', 'Événement soumis ! En attente de validation.');
-            return $this->redirectToRoute('app_event_index');
-        }
-        return $this->render('event/new.html.twig');
-    }
-
     #[Route('/{id}/register', name: 'app_event_register', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function register(
@@ -94,7 +103,7 @@ class EvenementController extends AbstractController
             $participation = new Participation();
             $participation->setUser($this->getUser());
             $participation->setEvenement($event);
-            $participation->setRegisteredAt(new \DateTime());
+            $participation->setRegisteredAt(new \DateTimeImmutable());
             $em->persist($participation);
             $em->flush();
             $this->addFlash('success', 'Inscription confirmée !');
@@ -125,12 +134,4 @@ class EvenementController extends AbstractController
 
         return $this->redirectToRoute('app_event_show', ['id' => $event->getId()]);
     }
-    #[Route('/my-events', name: 'app_my_events')]
-#[IsGranted('ROLE_USER')]
-public function myEvents(ParticipationRepository $partRepo): Response
-{
-    return $this->render('event/my_events.html.twig', [
-        'participations' => $partRepo->findBy(['user' => $this->getUser()])
-    ]);
-}
 }

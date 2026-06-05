@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mes événements{% endblock %}
+{% block body %}
+<h2 class="mb-4">📅 Mes événements</h2>
+{% if participations %}
+    <div class="row g-3">
+        {% for p in participations %}
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5>{{ p.evenement.nomEvenement }}</h5>
+                        <p class="text-muted small">
+                            <i class="bi bi-calendar3"></i>
+                            {{ p.evenement.dateDebut|date('d/m/Y') }}
+                        </p>
+                        <a href="{{ path('app_event_show', {id: p.evenement.id}) }}"
+                           class="btn btn-outline-primary btn-sm">Voir</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        Pas encore inscrit à un événement.
+        <a href="{{ path('app_event_index') }}">Voir les événements</a>
+    </div>
+{% endif %}
+{% endblock %}

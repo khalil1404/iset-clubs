@@ -1,11 +1,8 @@
 {% extends 'base.html.twig' %}
 {% block title %}Dashboard Admin{% endblock %}
-
 {% block body %}
 <div class="row">
-    <div class="col-md-2">
-        {% include 'admin/_sidebar.html.twig' %}
-    </div>
+    <div class="col-md-2">{% include 'admin/_sidebar.html.twig' %}</div>
     <div class="col-md-10">
         <h2 class="mb-4">🛡️ Dashboard Administrateur</h2>
         <div class="row g-3 mb-4">
@@ -25,9 +22,7 @@
                         <h2>{{ totalClubs }}</h2>
                         <p class="mb-0">Clubs</p>
                         {% if pendingClubs > 0 %}
-                            <span class="badge bg-warning text-dark">
-                                {{ pendingClubs }} en attente
-                            </span>
+                            <span class="badge bg-warning text-dark">{{ pendingClubs }} en attente</span>
                         {% endif %}
                     </div>
                 </div>
@@ -39,9 +34,31 @@
                         <h2>{{ totalEvents }}</h2>
                         <p class="mb-0">Événements</p>
                         {% if pendingEvents > 0 %}
-                            <span class="badge bg-warning text-dark">
-                                {{ pendingEvents }} en attente
-                            </span>
+                            <span class="badge bg-warning text-dark">{{ pendingEvents }} en attente</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white text-center shadow-sm">
+                    <div class="card-body">
+                        <i class="bi bi-briefcase fs-1"></i>
+                        <h2>{{ totalCandidatures }}</h2>
+                        <p class="mb-0">Candidatures</p>
+                        {% if pendingCandidatures > 0 %}
+                            <span class="badge bg-dark">{{ pendingCandidatures }} en attente</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-danger text-white text-center shadow-sm">
+                    <div class="card-body">
+                        <i class="bi bi-chat-dots fs-1"></i>
+                        <h2>{{ totalReclamations }}</h2>
+                        <p class="mb-0">Réclamations</p>
+                        {% if pendingReclamations > 0 %}
+                            <span class="badge bg-dark">{{ pendingReclamations }} en attente</span>
                         {% endif %}
                     </div>
                 </div>
@@ -57,10 +74,7 @@
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th>Nom</th>
-                            <th>Domaine</th>
-                            <th>Statut</th>
-                            <th>Actions</th>
+                            <th>Nom</th><th>Domaine</th><th>Statut</th><th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -91,3 +105,4 @@
     </div>
 </div>
 {% endblock %}
+

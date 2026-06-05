@@ -125,4 +125,12 @@ class EvenementController extends AbstractController
 
         return $this->redirectToRoute('app_event_show', ['id' => $event->getId()]);
     }
+    #[Route('/my-events', name: 'app_my_events')]
+#[IsGranted('ROLE_USER')]
+public function myEvents(ParticipationRepository $partRepo): Response
+{
+    return $this->render('event/my_events.html.twig', [
+        'participations' => $partRepo->findBy(['user' => $this->getUser()])
+    ]);
+}
 }

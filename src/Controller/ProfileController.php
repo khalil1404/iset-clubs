@@ -38,8 +38,12 @@ class ProfileController extends AbstractController
 
             $photoFile = $request->files->get('photo');
             if ($photoFile) {
-                $filename = $slugger->slug($user->getFirstname()).'-'.uniqid().'.'.$photoFile->guessExtension();
-                $photoFile->move($this->getParameter('profiles_directory'), $filename);
+                $filename = $slugger->slug($user->getFirstname()).'-'.uniqid()
+                           .'.'.$photoFile->guessExtension();
+                $photoFile->move(
+                    $this->getParameter('profiles_directory'),
+                    $filename
+                );
                 $user->setProfilePicture($filename);
             }
 
@@ -48,8 +52,7 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('app_profile');
         }
 
-        return $this->render('profile/edit.html.twig', [
-            'user' => $user
-        ]);
+        return $this->render('profile/edit.html.twig', ['user' => $user]);
     }
 }
+

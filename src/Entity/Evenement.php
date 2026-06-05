@@ -43,15 +43,9 @@ class Evenement
     #[ORM\ManyToOne(inversedBy: 'evenements')]
     private ?Club $club = null;
 
-    /**
-     * @var Collection<int, Participation>
-     */
     #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'evenement')]
     private Collection $participations;
 
-    /**
-     * @var Collection<int, Feedback>
-     */
     #[ORM\OneToMany(targetEntity: Feedback::class, mappedBy: 'event')]
     private Collection $feedback;
 
@@ -61,126 +55,36 @@ class Evenement
         $this->feedback = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    public function getId(): ?int { return $this->id; }
 
-    public function getNomEvenement(): ?string
-    {
-        return $this->nomEvenement;
-    }
+    public function getNomEvenement(): ?string { return $this->nomEvenement; }
+    public function setNomEvenement(string $nomEvenement): static { $this->nomEvenement = $nomEvenement; return $this; }
 
-    public function setNomEvenement(string $nomEvenement): static
-    {
-        $this->nomEvenement = $nomEvenement;
+    public function getDateDebut(): ?\DateTime { return $this->dateDebut; }
+    public function setDateDebut(\DateTime $dateDebut): static { $this->dateDebut = $dateDebut; return $this; }
 
-        return $this;
-    }
+    public function getDateFin(): ?\DateTime { return $this->dateFin; }
+    public function setDateFin(\DateTime $dateFin): static { $this->dateFin = $dateFin; return $this; }
 
-    public function getDateDebut(): ?\DateTime
-    {
-        return $this->dateDebut;
-    }
+    public function getLieu(): ?string { return $this->lieu; }
+    public function setLieu(string $lieu): static { $this->lieu = $lieu; return $this; }
 
-    public function setDateDebut(\DateTime $dateDebut): static
-    {
-        $this->dateDebut = $dateDebut;
+    public function getDescription(): ?string { return $this->description; }
+    public function setDescription(string $description): static { $this->description = $description; return $this; }
 
-        return $this;
-    }
+    public function getImage(): ?string { return $this->image; }
+    public function setImage(?string $image): static { $this->image = $image; return $this; }
 
-    public function getDateFin(): ?\DateTime
-    {
-        return $this->dateFin;
-    }
+    public function getStatus(): ?string { return $this->status; }
+    public function setStatus(string $status): static { $this->status = $status; return $this; }
 
-    public function setDateFin(\DateTime $dateFin): static
-    {
-        $this->dateFin = $dateFin;
+    public function getCreatedAt(): ?\DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
 
-        return $this;
-    }
+    public function getClub(): ?Club { return $this->club; }
+    public function setClub(?Club $club): static { $this->club = $club; return $this; }
 
-    public function getLieu(): ?string
-    {
-        return $this->lieu;
-    }
-
-    public function setLieu(string $lieu): static
-    {
-        $this->lieu = $lieu;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(?string $image): static
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    public function setStatus(string $status): static
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getClub(): ?Club
-    {
-        return $this->club;
-    }
-
-    public function setClub(?Club $club): static
-    {
-        $this->club = $club;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Participation>
-     */
-    public function getParticipations(): Collection
-    {
-        return $this->participations;
-    }
+    public function getParticipations(): Collection { return $this->participations; }
 
     public function addParticipation(Participation $participation): static
     {
@@ -188,29 +92,20 @@ class Evenement
             $this->participations->add($participation);
             $participation->setEvenement($this);
         }
-
         return $this;
     }
 
     public function removeParticipation(Participation $participation): static
     {
         if ($this->participations->removeElement($participation)) {
-            // set the owning side to null (unless already changed)
             if ($participation->getEvenement() === $this) {
                 $participation->setEvenement(null);
             }
         }
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Feedback>
-     */
-    public function getFeedback(): Collection
-    {
-        return $this->feedback;
-    }
+    public function getFeedback(): Collection { return $this->feedback; }
 
     public function addFeedback(Feedback $feedback): static
     {
@@ -218,19 +113,16 @@ class Evenement
             $this->feedback->add($feedback);
             $feedback->setEvent($this);
         }
-
         return $this;
     }
 
     public function removeFeedback(Feedback $feedback): static
     {
         if ($this->feedback->removeElement($feedback)) {
-            // set the owning side to null (unless already changed)
             if ($feedback->getEvent() === $this) {
                 $feedback->setEvent(null);
             }
         }
-
         return $this;
     }
 }

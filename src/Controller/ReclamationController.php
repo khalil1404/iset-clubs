@@ -18,9 +18,8 @@ class ReclamationController extends AbstractController
     #[Route('/', name: 'app_reclamation_index')]
     public function index(ReclamationRepository $repo): Response
     {
-        $reclamations = $repo->findBy(['user' => $this->getUser()]);
         return $this->render('reclamation/index.html.twig', [
-            'reclamations' => $reclamations
+            'reclamations' => $repo->findBy(['user' => $this->getUser()])
         ]);
     }
 
@@ -28,13 +27,13 @@ class ReclamationController extends AbstractController
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         if ($request->isMethod('POST')) {
-            $reclamation = new Reclamation();
-            $reclamation->setUser($this->getUser());
-            $reclamation->setSubject($request->request->get('subject'));
-            $reclamation->setMessage($request->request->get('message'));
-            $reclamation->setStatus('pending');
-            $reclamation->setCreatedAt(new \DateTimeImmutable());
-            $em->persist($reclamation);
+            $r = new Reclamation();
+            $r->setUser($this->getUser())
+              ->setSubject($request->request->get('subject'))
+              ->setMessage($request->request->get('message'))
+              ->setStatus('pending')
+              ->setCreatedAt(new \DateTime());
+            $em->persist($r);
             $em->flush();
             $this->addFlash('success', 'Réclamation envoyée !');
             return $this->redirectToRoute('app_reclamation_index');

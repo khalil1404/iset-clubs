@@ -19,7 +19,8 @@
             <p class="text-muted">{{ user.email }}</p>
             <span class="badge bg-primary mb-3">{{ user.dtype }}</span>
             <div>
-                <a href="{{ path('app_profile_edit') }}" class="btn btn-outline-primary">
+                <a href="{{ path('app_profile_edit') }}"
+                   class="btn btn-outline-primary">
                     <i class="bi bi-pencil"></i> Modifier le profil
                 </a>
             </div>
@@ -27,3 +28,4 @@
     </div>
 </div>
 {% endblock %}
+

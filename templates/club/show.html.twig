@@ -1,50 +1,29 @@
-{% extends 'base.html.twig' %}
-{% block title %}{{ club.name }}{% endblock %}
-
+% extends 'base.html.twig' %}
+{% block title %}Mes clubs{% endblock %}
 {% block body %}
-<div class="row">
-    <div class="col-md-4 text-center">
-        {% if club.logo %}
-            <img src="/uploads/logos/{{ club.logo }}"
-                 class="rounded-circle shadow mb-3"
-                 width="150" height="150" style="object-fit:cover">
-        {% else %}
-            <div class="bg-primary rounded-circle d-inline-flex
-                        align-items-center justify-content-center mb-3"
-                 style="width:150px;height:150px">
-                <i class="bi bi-people-fill text-white" style="font-size:4rem"></i>
+<h2 class="mb-4">🏆 Mes clubs</h2>
+{% if memberships %}
+    <div class="row g-3">
+        {% for m in memberships %}
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h5>{{ m.club.name }}</h5>
+                        <span class="badge bg-secondary">{{ m.role }}</span>
+                        <p class="text-muted small mt-2">
+                            Depuis {{ m.joinedAt|date('d/m/Y') }}
+                        </p>
+                        <a href="{{ path('app_club_show', {id: m.club.id}) }}"
+                           class="btn btn-outline-primary btn-sm">Voir</a>
+                    </div>
+                </div>
             </div>
-        {% endif %}
-        <h2>{{ club.name }}</h2>
-        <span class="badge bg-secondary fs-6">{{ club.domain }}</span>
-        {% if club.website %}
-            <p class="mt-2">
-                <a href="{{ club.website }}" target="_blank"
-                   class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-globe"></i> Site web
-                </a>
-            </p>
-        {% endif %}
+        {% endfor %}
     </div>
-    <div class="col-md-8">
-        <h4>À propos</h4>
-        <p class="lead">{{ club.description }}</p>
-        <hr>
-        <p class="text-muted">
-            <i class="bi bi-calendar3"></i>
-            Créé le {{ club.createdAt|date('d/m/Y') }}
-        </p>
-        {% if is_granted('ROLE_USER') and app.user %}
-            <form method="post" action="{{ path('app_club_join', {id: club.id}) }}" class="d-inline">
-                <input type="hidden" name="_token" value="{{ csrf_token('join'~club.id) }}">
-                <button type="submit" class="btn btn-success">
-                    <i class="bi bi-person-plus"></i> Rejoindre ce club
-                </button>
-            </form>
-            <a href="{{ path('app_my_clubs') }}" class="btn btn-outline-secondary ms-2">
-                Mes clubs
-            </a>
-        {% endif %}
+{% else %}
+    <div class="alert alert-info">
+        Pas encore membre d'un club.
+        <a href="{{ path('app_club_index') }}">Découvrir les clubs</a>
     </div>
-</div>
+{% endif %}
 {% endblock %}

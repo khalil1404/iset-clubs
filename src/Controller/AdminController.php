@@ -21,16 +21,22 @@ class AdminController extends AbstractController
     public function dashboard(
         ClubRepository $clubRepo,
         UserRepository $userRepo,
-        EvenementRepository $eventRepo
+        EvenementRepository $eventRepo,
+        CandidatureRepository $candRepo,
+        ReclamationRepository $reclRepo
     ): Response {
         return $this->render('admin/dashboard.html.twig', [
-            'totalClubs'    => count($clubRepo->findAll()),
-            'pendingClubs'  => count($clubRepo->findBy(['status' => 'pending'])),
-            'totalUsers'    => count($userRepo->findAll()),
-            'totalEvents'   => count($eventRepo->findAll()),
-            'pendingEvents' => count($eventRepo->findBy(['status' => 'pending'])),
-            'recentClubs'   => $clubRepo->findBy([], ['id' => 'DESC'], 5),
-            'recentUsers'   => $userRepo->findBy([], ['id' => 'DESC'], 5),
+            'totalClubs'          => count($clubRepo->findAll()),
+            'pendingClubs'        => count($clubRepo->findBy(['status' => 'pending'])),
+            'totalUsers'          => count($userRepo->findAll()),
+            'totalEvents'         => count($eventRepo->findAll()),
+            'pendingEvents'       => count($eventRepo->findBy(['status' => 'pending'])),
+            'totalCandidatures'   => count($candRepo->findAll()),
+            'pendingCandidatures' => count($candRepo->findBy(['status' => 'pending'])),
+            'totalReclamations'   => count($reclRepo->findAll()),
+            'pendingReclamations' => count($reclRepo->findBy(['status' => 'pending'])),
+            'recentClubs'         => $clubRepo->findBy([], ['id' => 'DESC'], 5),
+            'recentUsers'         => $userRepo->findBy([], ['id' => 'DESC'], 5),
         ]);
     }
 
@@ -60,7 +66,7 @@ class AdminController extends AbstractController
         if ($club) {
             $club->setStatus('approved');
             $em->flush();
-            $this->addFlash('success', "Club approuvé !");
+            $this->addFlash('success', 'Club approuvé !');
         }
         return $this->redirectToRoute('app_admin_clubs');
     }
@@ -75,7 +81,7 @@ class AdminController extends AbstractController
         if ($club) {
             $club->setStatus('rejected');
             $em->flush();
-            $this->addFlash('warning', "Club refusé.");
+            $this->addFlash('warning', 'Club refusé.');
         }
         return $this->redirectToRoute('app_admin_clubs');
     }
@@ -98,7 +104,7 @@ class AdminController extends AbstractController
         if ($event) {
             $event->setStatus('approved');
             $em->flush();
-            $this->addFlash('success', "Événement approuvé !");
+            $this->addFlash('success', 'Événement approuvé !');
         }
         return $this->redirectToRoute('app_admin_events');
     }
@@ -113,7 +119,7 @@ class AdminController extends AbstractController
         if ($event) {
             $event->setStatus('rejected');
             $em->flush();
-            $this->addFlash('warning', "Événement refusé.");
+            $this->addFlash('warning', 'Événement refusé.');
         }
         return $this->redirectToRoute('app_admin_events');
     }
@@ -122,7 +128,7 @@ class AdminController extends AbstractController
     public function candidatures(CandidatureRepository $candRepo): Response
     {
         return $this->render('admin/candidatures.html.twig', [
-            'candidatures' => $candRepo->findAll()
+            'candidatures' => $candRepo->findAll(),
         ]);
     }
 
@@ -160,7 +166,7 @@ class AdminController extends AbstractController
     public function reclamations(ReclamationRepository $repo): Response
     {
         return $this->render('admin/reclamations.html.twig', [
-            'reclamations' => $repo->findAll()
+            'reclamations' => $repo->findAll(),
         ]);
     }
 

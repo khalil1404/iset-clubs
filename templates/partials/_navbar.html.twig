@@ -29,13 +29,11 @@
                     </a>
                 </li>
 
-                {#
-                <li class="nav-item">
+                {# <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_recruitment_index') }}">
                         <i class="bi bi-briefcase"></i> Recrutements
                     </a>
-                </li>
-                #}
+                </li> #}
             </ul>
 
             <ul class="navbar-nav ms-auto">
@@ -80,17 +78,17 @@
                                 </a>
                             </li>
 
-                            <li>
+                            {# <li>
                                 <a class="dropdown-item" href="{{ path('app_my_events') }}">
                                     <i class="bi bi-calendar-check"></i> Mes événements
                                 </a>
-                            </li>
+                            </li> #}
 
-                            <li>
+                            {# <li>
                                 <a class="dropdown-item" href="{{ path('app_my_applications') }}">
                                     <i class="bi bi-briefcase"></i> Mes candidatures
                                 </a>
-                            </li>
+                            </li> #}
 
                             <li>
                                 <a class="dropdown-item text-danger" href="{{ path('app_logout') }}">

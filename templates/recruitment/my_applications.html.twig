@@ -3,31 +3,27 @@
 {% block body %}
 <h2 class="mb-4">📋 Mes candidatures</h2>
 {% if applications %}
-    <div class="table-responsive">
-        <table class="table table-hover">
-            <thead class="table-dark">
+    <table class="table table-hover">
+        <thead class="table-dark">
+            <tr><th>Poste</th><th>Club</th><th>Date</th><th>Statut</th></tr>
+        </thead>
+        <tbody>
+            {% for a in applications %}
                 <tr>
-                    <th>Poste</th><th>Club</th><th>Date</th><th>Statut</th>
+                    <td>{{ a.recrutement.title }}</td>
+                    <td>{{ a.recrutement.club.name }}</td>
+                    <td>{{ a.submittedAt|date('d/m/Y') }}</td>
+                    <td>
+                        <span class="badge {{
+                            a.status == 'accepted' ? 'bg-success' :
+                            (a.status == 'rejected' ? 'bg-danger' : 'bg-warning text-dark')
+                        }}">{{ a.status }}</span>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for app in applications %}
-                    <tr>
-                        <td>{{ app.recrutement.title }}</td>
-                        <td>{{ app.recrutement.club.name }}</td>
-                        <td>{{ app.submittedAt|date('d/m/Y') }}</td>
-                        <td>
-                            <span class="badge {{
-                                app.status == 'accepted' ? 'bg-success' :
-                                (app.status == 'rejected' ? 'bg-danger' : 'bg-warning text-dark')
-                            }}">{{ app.status }}</span>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+            {% endfor %}
+        </tbody>
+    </table>
 {% else %}
-    <div class="alert alert-info">Aucune candidature pour le moment.</div>
+    <div class="alert alert-info">Aucune candidature.</div>
 {% endif %}
 {% endblock %}
